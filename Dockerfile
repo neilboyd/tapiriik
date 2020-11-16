@@ -11,7 +11,7 @@ RUN apt-get update \
 COPY . /
 
 # set timezone so that tzdata doesn't prompt interactively
-ENV TZ=Europe/Amsterdam
+ENV TZ=America/Chicago
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # install  libs
