@@ -10,7 +10,7 @@ WEB_ROOT = "http://localhost:8000"
 USER_SYNC_LOGS = "./"
 
 # How many total sync workers are expected to be running
-TOTAL_SYNC_WORKERS = #
+TOTAL_SYNC_WORKERS = 1
 
 # These settings are used to communicate with each respective service
 # Register your installation with each service to get these values
