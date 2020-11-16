@@ -10,6 +10,10 @@ RUN apt-get update \
 # copy project
 COPY . /
 
+# set timezone so that tzdata doesn't prompt interactively
+ENV TZ=Europe/Amsterdam
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # install  libs
 RUN apt-get -y install git libxslt-dev libxml2-dev python3-lxml python3-crypto
 
