@@ -14,6 +14,9 @@ USER_SYNC_LOGS = "./"
 # How many total sync workers are expected to be running
 TOTAL_SYNC_WORKERS = 1
 
+# Services to hide from regular signup
+SOFT_LAUNCH_SERVICES = os.getenv("SOFT_LAUNCH_SERVICES", "").split(",")
+
 # These settings are used to communicate with each respective service
 # Register your installation with each service to get these values
 
