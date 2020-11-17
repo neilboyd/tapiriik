@@ -1,11 +1,4 @@
-FROM ubuntu:latest
-
-# install python
-RUN apt-get update \
-  && apt-get install -y python3-pip python3-dev \
-  && cd /usr/local/bin \
-  && ln -s /usr/bin/python3 python \
-  && pip3 install --upgrade pip
+FROM python:3
 
 # copy project
 COPY . /
@@ -14,14 +7,15 @@ COPY . /
 ENV TZ=America/Chicago
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# install  libs
+# install libs
+RUN apt-get update
 RUN apt-get -y install git libxslt-dev libxml2-dev python3-lxml python3-crypto
 
 # install requirements 
 RUN pip3 install -r requirements.txt
 
-# rename settings example com
-RUN cp tapiriik/local_settings.py.example tapiriik/local_settings.py 
+# copy settings file
+RUN cp tapiriik/local_settings.py.example tapiriik/local_settings.py
 
 # generate keys
 RUN python3 credentialstore_keygen.py >> tapiriik/local_settings.py
