@@ -15,7 +15,7 @@ RUN apt-get -y install git libxslt-dev libxml2-dev python3-lxml python3-crypto
 RUN pip3 install -r requirements.txt
 
 # copy settings file
-RUN cp tapiriik/local_settings.py.example tapiriik/local_settings.py
+RUN cp tapiriik/local_settings.py.os tapiriik/local_settings.py
 
 # generate keys
 RUN python3 credentialstore_keygen.py >> tapiriik/local_settings.py
