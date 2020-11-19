@@ -16,7 +16,7 @@ To run locally with [Docker Compose](https://docs.docker.com/compose/):
 - rebuild in case of any changes `docker-compose build` [`--no-cache`]
 
 To run on a hosted service such as
-[Azure Container Instances](https://azure.microsoft.com/en-us/services/container-instances/)
+[Web App for Containers](https://azure.microsoft.com/en-us/services/app-service/containers/)
 define the environment variables on the server.
 
 For convenience, everything is in one container.
