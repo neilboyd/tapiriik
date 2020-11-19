@@ -10,7 +10,7 @@ WEB_ROOT = "http://localhost:8000"
 USER_SYNC_LOGS = "./"
 
 # How many total sync workers are expected to be running
-TOTAL_SYNC_WORKERS = #
+TOTAL_SYNC_WORKERS = 1
 
 # These settings are used to communicate with each respective service
 # Register your installation with each service to get these values
@@ -33,11 +33,11 @@ NIKEPLUS_CLIENT_NAME = "####"
 NIKEPLUS_CLIENT_ID = "####"
 NIKEPLUS_CLIENT_SECRET = "####"
 
-PULSSTORY_CLIENT_ID="####"
-PULSSTORY_CLIENT_SECRET="####"
+PULSSTORY_CLIENT_ID = "####"
+PULSSTORY_CLIENT_SECRET = "####"
 
-RUNKEEPER_CLIENT_ID="####"
-RUNKEEPER_CLIENT_SECRET="####"
+RUNKEEPER_CLIENT_ID = "####"
+RUNKEEPER_CLIENT_SECRET = "####"
 
 RWGPS_APIKEY = "####"
 

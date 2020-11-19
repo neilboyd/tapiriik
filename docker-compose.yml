@@ -1,0 +1,26 @@
+version: '3'
+services:
+  tapiriik:
+    build: .
+    environment:
+      - RABBITMQ_BROKER_URL=amqp://guest@tapiriik_rabbitmq//
+      - MONGO_HOST=mongodb://root:example@tapiriik_mongo:27017/admin
+      - REDIS_HOST=tapiriik_redis
+      - RUNKEEPER_CLIENT_ID=####
+      - RUNKEEPER_CLIENT_SECRET=####
+      - SOFT_LAUNCH_SERVICES=x-runkeeper,strava,garminconnect,endomondo,sporttracks,dropbox,trainingpeaks,rwgps,trainasone,pulsstory,motivato,nikeplus,velohero,trainerroad,smashrun,beginnertriathlete,setio,singletracker,aerobia
+    ports:
+    - "8000:8000"
+    links:
+    - tapiriik_redis
+    - tapiriik_mongo
+    - tapiriik_rabbitmq
+  tapiriik_redis:
+    image: redis
+  tapiriik_mongo:
+    image: mongo 
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+  tapiriik_rabbitmq:
+    image: rabbitmq:3-management
