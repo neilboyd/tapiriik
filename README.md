@@ -19,6 +19,13 @@ To run on a hosted service such as
 [Azure Container Instances](https://azure.microsoft.com/en-us/services/container-instances/)
 define the environment variables on the server.
 
+For convenience, everything is in one container.
+In order to run at scale,
+you should use an external RabbitMQ and MongoDB instance.
+That leaves web, sync servers and Redis which can live together and scale together.
+[Ideally, Redis should also be an external instance](https://github.com/cpfair/tapiriik/wiki/tapiriik.com-infrastructure#web),
+but it's okay to leave it together with the web instances.
+
 ## Want to help with development?
 
 **Great!** If you're looking for a quick primer on how tapiriik functions under the hood, head on over to the [technical introduction wiki article](https://github.com/cpfair/tapiriik/wiki/tapiriik-internals). Once you're ready, send in a pull request and I'll work with you to get it merged.
