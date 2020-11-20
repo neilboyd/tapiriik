@@ -17,6 +17,8 @@ To run locally with [Docker Compose](https://docs.docker.com/compose/):
 
 To run on a hosted service such as
 [Web App for Containers](https://azure.microsoft.com/en-us/services/app-service/containers/)
+or
+[Azure Container Instances](https://azure.microsoft.com/en-us/services/container-instances/)
 define the environment variables on the server.
 
 For convenience, everything is in one container.

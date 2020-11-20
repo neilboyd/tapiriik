@@ -21,4 +21,4 @@ RUN cp tapiriik/local_settings.py.os tapiriik/local_settings.py
 RUN python3 credentialstore_keygen.py >> tapiriik/local_settings.py
 
 # run server, worker and scheduler
-ENTRYPOINT python3 manage.py runserver 0.0.0.0:80 && python3 sync_worker.py && python3 sync_scheduler.py
+ENTRYPOINT python3 manage.py runserver 0.0.0.0:8000 && python3 sync_worker.py && python3 sync_scheduler.py
