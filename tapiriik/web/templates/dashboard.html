@@ -11,7 +11,6 @@
 		<a href="{% url 'diagnostics_unsu' %}">Return</a>
 		<hr/>
 		{% endif %}
-		<p><b>Seeing strange activities in your accounts uploaded by tapiriik?</b> <a href="/garmin_connect_bad_data">Read more here.</a></p>
 
 		{% if user.BlockedOnBadActivitiesAcknowledgement %}
 		<form method="POST" action="/sync/bad_activities_acknowledgement_clear" style="text-align: center;">{% csrf_token %}
@@ -77,6 +76,7 @@
 	{% endfor %}
 
 {% else %}
+<p class="splashPreamble"><b>Work in Progress! Coming soon! Please be patient!</b></p>
 <p class="splashPreamble">tapiriik synchronizes your fitness activities between Garmin Connect, Runkeeper, Strava, TrainingPeaks, SportTracks.mobi, Endomondo, RideWithGPS, TrainAsONE, TrainerRoad, Motivato, Velo Hero, Epson RUNSENSE, Dropbox, Smashrun, BeginnerTriathlete, Pulsstory, Singletracker,  and SETIO<br/>
 (your heart rate, cadence, power, and temperature data syncs too)</p>
 
