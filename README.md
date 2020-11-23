@@ -17,14 +17,18 @@ To run locally with [Docker Compose](https://docs.docker.com/compose/):
 
 To run on a hosted service such as
 [Web App for Containers](https://azure.microsoft.com/en-us/services/app-service/containers/)
+or
+[Azure Container Instances](https://azure.microsoft.com/en-us/services/container-instances/)
 define the environment variables on the server.
+NB: you'll also need to define [`WEBSITES_PORT=8000`](https://docs.microsoft.com/en-us/azure/app-service/configure-custom-container?pivots=container-linux#configure-port-number).
 
 For convenience, everything is in one container.
 In order to run at scale,
 you should use an external RabbitMQ and MongoDB instance.
 That leaves web, sync servers and Redis which can live together and scale together.
 [Ideally, Redis should also be an external instance](https://github.com/cpfair/tapiriik/wiki/tapiriik.com-infrastructure#web),
-but it's okay to leave it together with the web instances.
+but it's okay to leave it together with the web instances,
+or don't use Redis at all (by not defining `REDIS_HOST`).
 
 ## Want to help with development?
 

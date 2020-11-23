@@ -1,5 +1,6 @@
 requests
-pymongo==3.0.1
+dnspython
+pymongo==3.10.1
 pytz
 lxml
 dropbox
