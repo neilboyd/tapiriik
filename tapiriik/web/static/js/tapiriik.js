@@ -92,7 +92,7 @@ tapiriik.Init = function(){
 		});
 	});
 
-	setInterval(tapiriik.CycleLogo, 60 * 1000);
+	// setInterval(tapiriik.CycleLogo, 60 * 1000);
 };
 
 tapiriik.AddressChanged=function(){
