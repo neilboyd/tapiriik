@@ -3,6 +3,9 @@ import os
 # Look in settings.py for more settings to override
 # including mongodb, rabbitmq, and redis connection settings
 
+DEBUG = bool(os.getenv("DEBUG"))
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+
 # This is the url that is used for redirects after logging in to each service
 # It only needs to be accessible to the client browser
 WEB_ROOT = "http://localhost:8000"
