@@ -3,16 +3,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" value="text/html; charset=UTF-8">
-	<meta name="Description" content="Automatically synchronize your fitness activities between Garmin Connect, Runkeeper, Strava and more.">
-	<meta name="Keywords" content="automatic, synchronize, sync, update, copy, transfer, download, back up, export, fitness, garmin, garmin connect, runkeeper, strava, endomondo, sporttracks, trainingpeaks, ridewithgps, ride with gps, training peaks, dropbox, trainerroad, motivato, velohero, epson, runsense, path, track, heart rate, free, service, gpx, tcx, health, data, service, cycling, running, swimming, walking, what other activities can I put here?, underwater basket weaving, why are you reading the SEO keywords anyways, move along, nothing to see here">
+    <meta http-equiv="Content-Type" value="text/html; charset=UTF-8">
+    <meta name="Description" content="Automatically synchronize your fitness activities between Garmin Connect, Runkeeper, Strava and more.">
+    <meta name="Keywords" content="automatic, synchronize, sync, update, copy, transfer, download, back up, export, fitness, garmin, garmin connect, runkeeper, strava, endomondo, sporttracks, trainingpeaks, ridewithgps, ride with gps, training peaks, dropbox, trainerroad, motivato, velohero, epson, runsense, path, track, heart rate, free, service, gpx, tcx, health, data, service, cycling, running, swimming, walking, what other activities can I put here?, underwater basket weaving, why are you reading the SEO keywords anyways, move along, nothing to see here">
 
-	{% stylesheet 'tapiriik-css' %}
+    {% stylesheet 'tapiriik-css' %}
     {% if config.in_diagnostics %}
-	<script type="text/javascript">tapiriik = {diagnostics: true};</script>
-	<script type="text/javascript" src="{{ STATIC_URL }}js/Chart.min.js"></script>
-	<link rel="stylesheet" href="{{ STATIC_URL }}css/diagnostics.css" />
-	{% endif %}
+    <script type="text/javascript">tapiriik = {diagnostics: true};</script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/Chart.min.js"></script>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/diagnostics.css" />
+    {% endif %}
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
     {% javascript 'tapiriik-js' %}
     {% if user %}
@@ -28,62 +28,71 @@
 
 <body {% if celebration_mode %}class="{{ celebration_mode.BodyCSSClasses }}"{% endif %} ng-app="tapiriik">
 
-	<!-- I blame centre-aligning -->
-	<div class="contentOuter">
-		<div class="contentWrap">
-			<div class="mainBlock">
-				<div class="logo">
-					{% if celebration_mode.Logo %}
-						<a href="/"><img src="{{ STATIC_URL}}img/{{ celebration_mode.Logo }}" title="{{ celebration_mode.TitleText }}" alt="{{ celebration_mode.TitleText }}"/></a>
-					{% else %}
-						<a href="/">tapiriik</a>
-					{% endif %}
-					{% if celebration_mode.Subtitle %}
-						<div class="sub">{{ celebration_mode.Subtitle }}</div>
-					{% else %}
-						<div class="sub">keeps your fitness in sync</div>
-					{% endif %}
-				</div>
-				<div class="logoPad"></div>
-				<div class="contentOuterBorder">
-					<div class="content">
-		    			{% block content %}{% endblock %}
-		    		</div>
-	    		</div>
-	    		<div class="footers"><a href="{% url 'faq' %}">FAQ</a> | <a href="{% url 'privacy' %}">Privacy</a> | <a href="{% url 'credits' %}">Credits</a>{% if user %} | <a href="#" onclick="tapiriik.Logout();">Log out</a>{% endif %}<br/><span style="font-size:95%;font-weight:normal">All trademarks displayed are property of their respective owners</br>
-	    			<a href="http://twitter.com/tapiriik" target="_blank">@tapiriik</a> is an <a href="https://github.com/cpfair/tapiriik" target="_blank">open source project</a> by <a href="{% url 'contact' %}">Collin Fair</a>
-	    		</div>
-	    	</div>
-    	</div>
+    <!-- I blame centre-aligning -->
+    <div class="contentOuter">
+        <div class="contentWrap">
+            <div class="mainBlock">
+                <div class="logo">
+                    {% if celebration_mode.Logo %}
+                        <a href="/"><img src="{{ STATIC_URL}}img/{{ celebration_mode.Logo }}" title="{{ celebration_mode.TitleText }}" alt="{{ celebration_mode.TitleText }}"/></a>
+                    {% else %}
+                        <a href="/">siiink.com</a>
+                    {% endif %}
+                    {% if celebration_mode.Subtitle %}
+                        <div class="sub">{{ celebration_mode.Subtitle }}</div>
+                    {% else %}
+                        <div class="sub">keeps your fitness in sync</div>
+                    {% endif %}
+                </div>
+                <div class="logoPad"></div>
+                <div class="contentOuterBorder">
+                    <div class="content">
+                        {% block content %}{% endblock %}
+                    </div>
+                </div>
+                <div class="footers">
+                    <a href="{% url 'faq' %}">FAQ</a>
+                    |
+                    <a href="{% url 'privacy' %}">Privacy</a>
+                    |
+                    <a href="{% url 'credits' %}">Credits</a>
+                    |
+                    <a href="{% url 'contact' %}">Contact</a>
+                    {% if user %} | <a href="#" onclick="tapiriik.Logout();">Log out</a>{% endif %}<br/>
+                    <span style="font-size:95%;font-weight:normal">All trademarks displayed are property of their respective owners<br/>
+                    <a href="http://twitter.com/tapiriik" target="_blank">@tapiriik</a> is an <a href="https://github.com/neilboyd/tapiriik" target="_blank">open source project</a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- I should procedurally generate these -->
     <div class="environsWrap">
-	    <div class="environs">
-	    	<div class="background"></div>
-	    	<div class="mountains">
-	    		<div id="a" class="mountain"></div><div id="b" class="mountain"></div><div id="c" class="mountain"></div>
-	    		<div class="snow"></div>
-	    	</div>
-	    	<div class="sun"></div>
-	    </div>
-	</div>
+        <div class="environs">
+            <div class="background"></div>
+            <div class="mountains">
+                <div id="a" class="mountain"></div><div id="b" class="mountain"></div><div id="c" class="mountain"></div>
+                <div class="snow"></div>
+            </div>
+            <div class="sun"></div>
+        </div>
+    </div>
 
-	<script type="text/javascript">
-	{% include "js-bridge.js" %}
+    <script type="text/javascript">
+    {% include "js-bridge.js" %}
 
-	var _gaq = _gaq || [];
-	_gaq.push(['_setAccount', 'UA-39083873-1']);
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-39083873-1']);
     _gaq.push(['_gat._anonymizeIp']);
-	_gaq.push(['_trackPageview']);
-	_gaq.push(['_setDomainName', 'none']);
+    _gaq.push(['_trackPageview']);
+    _gaq.push(['_setDomainName', 'none']);
 
-	(function() {
-	  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	})();
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
 
-	</script>
+    </script>
 </body>
 </html>
