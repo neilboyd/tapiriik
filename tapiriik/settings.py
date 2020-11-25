@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 # Django settings for tapiriik project.
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (

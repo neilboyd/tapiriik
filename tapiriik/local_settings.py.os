@@ -4,6 +4,7 @@ import os
 # including mongodb, rabbitmq, and redis connection settings
 
 DEBUG = bool(os.getenv("DEBUG"))
+TEMPLATE_DEBUG = bool(os.getenv("TEMPLATE_DEBUG", DEBUG))
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 # This is the url that is used for redirects after logging in to each service
