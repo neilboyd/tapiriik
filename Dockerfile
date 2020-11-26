@@ -20,5 +20,8 @@ RUN cp tapiriik/local_settings.py.os tapiriik/local_settings.py
 # generate keys
 RUN python3 credentialstore_keygen.py >> tapiriik/local_settings.py
 
+# generate static files
+RUN python3 manage.py collectstatic --noinput
+
 # run server, worker and scheduler
-ENTRYPOINT python3 manage.py runserver 0.0.0.0:8000 && python3 sync_worker.py && python3 sync_scheduler.py
+ENTRYPOINT python3 manage.py runserver 0.0.0.0:8000 --insecure && python3 sync_worker.py && python3 sync_scheduler.py
