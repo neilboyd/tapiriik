@@ -13,7 +13,7 @@ To run locally with [Docker Compose](https://docs.docker.com/compose/):
 - define environment variables in [`docker-compose.yml`](docker-compose.yml)
 - run `docker-compose up -d`
 - stop `docker-compose down`
-- rebuild in case of any changes `docker-compose build`
+- rebuild in case of any changes `docker-compose build`, or `docker-compose up -d --build`
 
 To run on a hosted service such as
 [Web App for Containers](https://azure.microsoft.com/en-us/services/app-service/containers/)
