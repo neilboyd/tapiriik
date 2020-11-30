@@ -10,7 +10,7 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 # This is the url that is used for redirects after logging in to each service
 # It only needs to be accessible to the client browser
-WEB_ROOT = "http://localhost:8000"
+WEB_ROOT = os.getenv("WEB_ROOT", "http://localhost:8000")
 
 # This is where sync logs show up
 # It is the only directory that needs to be writable by the webapp user
