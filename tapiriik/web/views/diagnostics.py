@@ -230,8 +230,8 @@ def diag_payments(req):
 
 @diag_requireAuth
 def diag_ip(req):
-    from ipware.ip import get_real_ip
-    return HttpResponse(get_real_ip(req))
+    from ipware.ip import get_client_ip
+    return HttpResponse(get_client_ip(req))
 
 def diag_login(req):
     if "password" in req.POST:
