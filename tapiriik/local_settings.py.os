@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 # Look in settings.py for more settings to override
 # including mongodb, rabbitmq, and redis connection settings
@@ -64,7 +65,9 @@ SPORTTRACKS_CLIENT_SECRET = os.getenv("SPORTTRACKS_CLIENT_SECRET")
 
 STRAVA_CLIENT_SECRET = os.getenv("STRAVA_CLIENT_SECRET")
 STRAVA_CLIENT_ID = os.getenv("STRAVA_CLIENT_ID")
-STRAVA_RATE_LIMITS = os.getenv("STRAVA_RATE_LIMITS", "").split(",")
+
+# TODO read this from environment: https://github.com/neilboyd/tapiriik/issues/18
+STRAVA_RATE_LIMITS = [ (  timedelta(minutes=15) , 100 ) , (  timedelta(days=1) , 1000 ) ]
 
 TRAINASONE_SERVER_URL = "https://beta.trainasone.com"
 TRAINASONE_CLIENT_SECRET = os.getenv("TRAINASONE_CLIENT_SECRET")
