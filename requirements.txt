@@ -11,6 +11,6 @@ celery
 django-pipeline==1.5.1
 requests_oauthlib==0.4.0
 redis==2.10.6
-django-ipware
+django-ipware==2.1
 smashrun-client>=0.6.0
 beautifulsoup4
