@@ -24,4 +24,5 @@ RUN python3 credentialstore_keygen.py >> tapiriik/local_settings.py
 RUN python3 manage.py collectstatic --noinput
 
 # run server, worker and scheduler
+# override this when running to online provide one of these commands
 CMD python3 manage.py runserver 0.0.0.0:8000 --insecure && python3 sync_worker.py && python3 sync_scheduler.py
