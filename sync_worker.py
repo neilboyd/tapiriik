@@ -66,16 +66,14 @@ print(" %d -> Index %s\n -> Interface %s" % (os.getpid(), settings.WORKER_INDEX,
 # The better way would be to defer initializing services until they're requested, but it's 10:30 and this will work just as well.
 from tapiriik.sync import Sync
 
-Sync.InitializeWorkerBindings()
-
-sync_heartbeat("ready")
-
-worker_message("ready")
-
-Sync.PerformGlobalSync(heartbeat_callback=sync_heartbeat, version=WorkerVersion, max_users=RecycleInterval)
-
-worker_message("shutting down cleanly")
-db.sync_workers.remove({"_id": heartbeat_rec_id})
-close_connections()
-worker_message("shut down")
-sys.stdout.flush()
+while True:
+    Sync.InitializeWorkerBindings()
+    sync_heartbeat("ready")
+    worker_message("ready")
+    Sync.PerformGlobalSync(heartbeat_callback=sync_heartbeat, version=WorkerVersion, max_users=RecycleInterval)
+    worker_message("shutting down cleanly")
+    db.sync_workers.remove({"_id": heartbeat_rec_id})
+    close_connections()
+    worker_message("shut down")
+    sys.stdout.flush()
+    worker_message("restarting")
