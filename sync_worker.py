@@ -22,7 +22,7 @@ WorkerVersion = subprocess.Popen(["git", "rev-parse", "HEAD"], stdout=subprocess
 os.chdir(oldCwd)
 
 def sync_heartbeat(state, user=None):
-    db.sync_workers.update({"_id": heartbeat_rec_id}, {"$set": {"Heartbeat": datetime.utcnow(), "State": state, "User": user}})
+    db.sync_workers.update_one({"_id": heartbeat_rec_id}, {"$set": {"Heartbeat": datetime.utcnow(), "State": state, "User": user}})
 
 worker_message("initialized")
 
