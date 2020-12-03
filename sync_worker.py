@@ -22,7 +22,7 @@ WorkerVersion = subprocess.Popen(["git", "rev-parse", "HEAD"], stdout=subprocess
 os.chdir(oldCwd)
 
 def sync_heartbeat(state, user=None):
-    db.sync_workers.update({"_id": heartbeat_rec_id}, {"$set": {"Heartbeat": datetime.utcnow(), "State": state, "User": user}})
+    db.sync_workers.update_one({"_id": heartbeat_rec_id}, {"$set": {"Heartbeat": datetime.utcnow(), "State": state, "User": user}})
 
 worker_message("initialized")
 
@@ -75,7 +75,7 @@ worker_message("ready")
 Sync.PerformGlobalSync(heartbeat_callback=sync_heartbeat, version=WorkerVersion, max_users=RecycleInterval)
 
 worker_message("shutting down cleanly")
-db.sync_workers.remove({"_id": heartbeat_rec_id})
+db.sync_workers.delete_one({"_id": heartbeat_rec_id})
 close_connections()
 worker_message("shut down")
 sys.stdout.flush()
