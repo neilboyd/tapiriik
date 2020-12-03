@@ -17,6 +17,8 @@ spec:
       containers:
       - name: tapiriik-scheduler
         image: neilb27/tapiriik:kubernetes
+        command: ["python3"]
+        args: ["sync_scheduler.py"]
         resources:
           requests:
             cpu: 100m
@@ -53,6 +55,8 @@ spec:
       containers:
       - name: tapiriik-worker
         image: neilb27/tapiriik:kubernetes
+        command: ["python3"]
+        args: ["sync_worker.py"]
         resources:
           requests:
             cpu: 100m
