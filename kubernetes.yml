@@ -7,6 +7,8 @@ stringData:
   redis-host: "tapiriik-redis"
   rabbitmq-broker-url: "amqp://guest@tapiriik_rabbitmq//"
   mongo-host: "mongodb://root:example@tapiriik_mongo:27017/admin"
+  runkeeper-client-id: "####"
+  runkeeper-client-secret: "####"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -144,3 +146,73 @@ spec:
             secretKeyRef:
               name: tapiriik-secret
               key: mongo-host
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tapiriik-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tapiriik-web
+  template:
+    metadata:
+      labels:
+        app: tapiriik-web
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: tapiriik-web
+        image: neilb27/tapiriik:kubernetes
+        command: ["python3"]
+        args: ["manage.py", "runserver", "0.0.0.0:80", "--insecure"]
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 80
+        env:
+        - name: DEBUG
+          value: "True"
+        - name: REDIS_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: redis-host
+        - name: RABBITMQ_BROKER_URL
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: rabbitmq-broker-url
+        - name: MONGO_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: mongo-host
+        - name: RUNKEEPER_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: runkeeper-client-id
+        - name: RUNKEEPER_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: runkeeper-client-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tapiriik-web
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: tapiriik-web
