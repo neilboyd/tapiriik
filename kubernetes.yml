@@ -1,3 +1,13 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tapiriik-secret
+type: Opaque
+stringData:
+  redis-host: "tapiriik-redis"
+  rabbitmq-broker-url: "amqp://guest@tapiriik_rabbitmq//"
+  mongo-host: "mongodb://root:example@tapiriik_mongo:27017/admin"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -72,12 +82,21 @@ spec:
         env:
         - name: DEBUG
           value: "True"
-        - name: RABBITMQ_BROKER_URL
-          value: amqp://guest@tapiriik_rabbitmq//
-        - name: MONGO_HOST
-          value: mongodb://root:example@tapiriik_mongo:27017/admin
         - name: REDIS_HOST
-          value: tapiriik-redis
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: redis-host
+        - name: RABBITMQ_BROKER_URL
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: rabbitmq-broker-url
+        - name: MONGO_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: mongo-host
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -110,9 +129,18 @@ spec:
         env:
         - name: DEBUG
           value: "True"
-        - name: RABBITMQ_BROKER_URL
-          value: amqp://guest@tapiriik_rabbitmq//
-        - name: MONGO_HOST
-          value: mongodb://root:example@tapiriik_mongo:27017/admin
         - name: REDIS_HOST
-          value: tapiriik-redis
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: redis-host
+        - name: RABBITMQ_BROKER_URL
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: rabbitmq-broker-url
+        - name: MONGO_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: mongo-host
