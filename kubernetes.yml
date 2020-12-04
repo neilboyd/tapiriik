@@ -1,15 +1,3 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: tapiriik-secret
-type: Opaque
-stringData:
-  redis-host: "tapiriik-redis"
-  rabbitmq-broker-url: "amqp://guest@tapiriik_rabbitmq//"
-  mongo-host: "mongodb://root:example@tapiriik_mongo:27017/admin"
-  runkeeper-client-id: "####"
-  runkeeper-client-secret: "####"
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -99,6 +87,56 @@ spec:
             secretKeyRef:
               name: tapiriik-secret
               key: mongo-host
+        - name: RUNKEEPER_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: runkeeper-client-id
+        - name: RUNKEEPER_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: runkeeper-client-secret
+        - name: DROPBOX_APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-app-key
+        - name: DROPBOX_APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-app-secret
+        - name: DROPBOX_FULL_APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-full-app-key
+        - name: DROPBOX_FULL_APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-full-app-secret
+        - name: STRAVA_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: strava-client-id
+        - name: STRAVA_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: strava-client-secret
+        - name: SPORTTRACKS_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: sporttracks-client-id
+        - name: SPORTTRACKS_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: sporttracks-client-secret
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -131,6 +169,8 @@ spec:
         env:
         - name: DEBUG
           value: "True"
+        - name: TOTAL_SYNC_WORKERS
+          value: "1"
         - name: REDIS_HOST
           valueFrom:
             secretKeyRef:
@@ -146,6 +186,56 @@ spec:
             secretKeyRef:
               name: tapiriik-secret
               key: mongo-host
+        - name: RUNKEEPER_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: runkeeper-client-id
+        - name: RUNKEEPER_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: runkeeper-client-secret
+        - name: DROPBOX_APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-app-key
+        - name: DROPBOX_APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-app-secret
+        - name: DROPBOX_FULL_APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-full-app-key
+        - name: DROPBOX_FULL_APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-full-app-secret
+        - name: STRAVA_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: strava-client-id
+        - name: STRAVA_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: strava-client-secret
+        - name: SPORTTRACKS_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: sporttracks-client-id
+        - name: SPORTTRACKS_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: sporttracks-client-secret
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -180,6 +270,8 @@ spec:
         env:
         - name: DEBUG
           value: "True"
+        - name: SOFT_LAUNCH_SERVICES
+          value: "runkeeper,garminconnect,endomondo,trainingpeaks,trainasone,pulsstory,motivato,nikeplus,velohero,trainerroad,smashrun,beginnertriathlete,setio,singletracker,aerobia"
         - name: REDIS_HOST
           valueFrom:
             secretKeyRef:
@@ -205,6 +297,46 @@ spec:
             secretKeyRef:
               name: tapiriik-secret
               key: runkeeper-client-secret
+        - name: DROPBOX_APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-app-key
+        - name: DROPBOX_APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-app-secret
+        - name: DROPBOX_FULL_APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-full-app-key
+        - name: DROPBOX_FULL_APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-full-app-secret
+        - name: STRAVA_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: strava-client-id
+        - name: STRAVA_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: strava-client-secret
+        - name: SPORTTRACKS_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: sporttracks-client-id
+        - name: SPORTTRACKS_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: sporttracks-client-secret
 ---
 apiVersion: v1
 kind: Service
