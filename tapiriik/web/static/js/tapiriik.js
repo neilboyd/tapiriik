@@ -186,6 +186,7 @@ tapiriik.DeauthDialogLinkClicked = function(e){
 tapiriik.IFrameOAuthReturn=function(success){
 	if (success){
 		$.address.value("");
+		console.info("iframe oauth return");
 		window.location.reload();
 	} else {
 		$.address.value("");
@@ -790,12 +791,20 @@ tapiriik.ClearExceptionLinkClicked = function(){
 	var postComplete = false;
 	$.post("/sync/errors/" + service + "/clear/" + group, function(){
 		postComplete = true;
-		if (animationComplete && postComplete) window.location.reload(); // Imagine AngularJS right here.
+		if (animationComplete && postComplete)
+		{
+			console.info("sync error");
+			window.location.reload(); // Imagine AngularJS right here.
+		}
 	});
 
 	$(this).closest(".userException").slideUp(function(){
 		animationComplete = true;
-		if (animationComplete && postComplete) window.location.reload();
+		if (animationComplete && postComplete)
+		{
+			console.info("user exception");
+			window.location.reload();
+		}
 	});
 	return false;
 };
@@ -822,6 +831,7 @@ tapiriik.UpdateSyncCountdown = function(){
 		tapiriik.NextSync = data.NextSync !== null ? new Date(data.NextSync) : null;
 		tapiriik.LastSync = data.LastSync !== null ? new Date(data.LastSync) : null;
 		if (tapiriik.SyncHash !== undefined && tapiriik.SyncHash != data.Hash){
+			console.info("sync hash");
 			window.location.reload(); // show them the whatever's new
 		}
 		tapiriik.SyncHash = data.Hash;
@@ -836,6 +846,7 @@ tapiriik.UpdateSyncCountdown = function(){
 		tapiriik.PendingSyncStatusUpdate = false;
 		// I trashed the session store somehow, and everyone got logged out.
 		if (req.status == 403) {
+			console.info("session trashed");
 			window.location.reload();
 		}
 	}});
