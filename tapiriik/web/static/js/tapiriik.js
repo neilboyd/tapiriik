@@ -847,7 +847,7 @@ tapiriik.UpdateSyncCountdown = function(){
 		// I trashed the session store somehow, and everyone got logged out.
 		if (req.status == 403) {
 			console.info("session trashed");
-			window.location.reload();
+			// window.location.reload();
 		}
 	}});
 };
