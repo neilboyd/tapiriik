@@ -142,7 +142,7 @@ class SportTracksService(ServiceBase):
     _tokenCache = SessionCache("sporttracks", lifetime=timedelta(minutes=115), freshen_on_get=False)
 
     def WebInit(self):
-        self.UserAuthorizationURL = "https://api.sporttracks.mobi/oauth2/authorize?response_type=code&client_id=%s&state=mobi_api" % SPORTTRACKS_CLIENT_ID
+        self.UserAuthorizationURL = "https://api.sporttracks.mobi/oauth2/authorize?response_type=code&client_id=" + SPORTTRACKS_CLIENT_ID + "&state=mobi_api&redirect_uri=" + WEB_ROOT + reverse("oauth_return", kwargs={"service": "sporttracks"})
 
     def _getAuthHeaders(self, serviceRecord=None):
         token = self._tokenCache.Get(serviceRecord.ExternalID)
