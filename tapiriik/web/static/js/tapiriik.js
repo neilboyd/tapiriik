@@ -654,7 +654,7 @@ tapiriik.OpenPaymentReclaimDialog = function(){
 };
 
 tapiriik.OpenPaymentReclaimInitiatedDialog = function(email){
-	var form = $("<center><h1>The email is on its way</h1>An email has been sent to <b><span class=\"email\"></span></b> with a link to reclaim your payment.<br/>Don't have access to <b><span class=\"email\"></span></b> any more? <a href=\"mailto:contact@tapiriik.com\">Get in touch</a><br/><button id=\"acknowledge\">I'll be waiting</button></center>");
+	var form = $("<center><h1>The email is on its way</h1>An email has been sent to <b><span class=\"email\"></span></b> with a link to reclaim your payment.<br/>Don't have access to <b><span class=\"email\"></span></b> any more? <a href=\"mailto:neil@siiink.com\">Get in touch</a><br/><button id=\"acknowledge\">I'll be waiting</button></center>");
 	$(".email", form).text(email);
 	$("#acknowledge", form).click(function(){
 		$.address.value("");
