@@ -270,6 +270,10 @@ spec:
         env:
         - name: DEBUG
           value: "True"
+        - name: WEB_ROOT
+          value: "https://siiink.com/"
+        - name: ALLOWED_HOSTS
+          value: "www.siiink.com"
         - name: SOFT_LAUNCH_SERVICES
           value: "runkeeper,garminconnect,endomondo,trainingpeaks,trainasone,pulsstory,motivato,nikeplus,velohero,trainerroad,smashrun,beginnertriathlete,setio,singletracker,aerobia"
         - name: REDIS_HOST
