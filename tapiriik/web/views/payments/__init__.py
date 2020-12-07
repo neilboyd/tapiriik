@@ -101,7 +101,7 @@ def payments_claim_initiate(request, user, email):
     reclaim_url = request.build_absolute_uri(reverse("payments_claim_return", kwargs={"code": claim_code}))
     from tapiriik.web.email import generate_message_from_template, send_email
     message, plaintext_message = generate_message_from_template("email/payment_reclaim.html", {"url":reclaim_url})
-    send_email(email, "Reclaim your payment on tapiriik.com", message, plaintext_message=plaintext_message)
+    send_email(email, "Reclaim your payment on siiink.com", message, plaintext_message=plaintext_message)
     return True
 
 def payments_claim_wait_ajax(request):

@@ -12,7 +12,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-ALLOWED_HOSTS = ["tapiriik.com", ".tapiriik.com", "localhost"]
+ALLOWED_HOSTS = ["siiink.com", ".siiink.com", "localhost"]
 
 USE_X_FORWARDED_HOST = True
 

@@ -45,7 +45,7 @@ class TrainingPeaksService(ServiceBase):
     }
     SupportedActivities = ActivityType.List() # All.
 
-    _redirect_url = "https://tapiriik.com/auth/return/trainingpeaks"
+    _redirect_url = "https://www.siiink.com/auth/return/trainingpeaks"
     _tokenCache = SessionCache("trainingpeaks", lifetime=timedelta(minutes=30), freshen_on_get=False)
 
     def WebInit(self):

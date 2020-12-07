@@ -153,7 +153,7 @@ class SportTracksService(ServiceBase):
 
             # Use refresh token to get access token
             # Hardcoded return URI to get around the lack of URL reversing without loading up all the Django stuff
-            params = {"grant_type": "refresh_token", "refresh_token": serviceRecord.Authorization["RefreshToken"], "client_id": SPORTTRACKS_CLIENT_ID, "client_secret": SPORTTRACKS_CLIENT_SECRET, "redirect_uri": "https://siiink.com/auth/return/sporttracks"}
+            params = {"grant_type": "refresh_token", "refresh_token": serviceRecord.Authorization["RefreshToken"], "client_id": SPORTTRACKS_CLIENT_ID, "client_secret": SPORTTRACKS_CLIENT_SECRET, "redirect_uri": "https://www.siiink.com/auth/return/sporttracks"}
             response = requests.post("https://api.sporttracks.mobi/oauth2/token", data=urllib.parse.urlencode(params), headers={"Content-Type": "application/x-www-form-urlencoded"})
             if response.status_code != 200:
                 if response.status_code >= 400 and response.status_code < 500:

@@ -54,7 +54,7 @@ class MotivatoService(ServiceBase):
 
     _sessionCache = SessionCache("motivato", lifetime=timedelta(minutes=30), freshen_on_get=True)
     _obligatory_headers = {
-        "Referer": "https://sync.tapiriik.com"
+        "Referer": "https://www.siiink.com"
     }
 
     _urlRoot = "http://motivato.pl"
