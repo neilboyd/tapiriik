@@ -137,6 +137,11 @@ spec:
             secretKeyRef:
               name: tapiriik-secret
               key: sporttracks-client-secret
+        - name: RWGPS_APIKEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: rwgps-api-key
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -236,6 +241,11 @@ spec:
             secretKeyRef:
               name: tapiriik-secret
               key: sporttracks-client-secret
+        - name: RWGPS_APIKEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: rwgps-api-key
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -341,6 +351,11 @@ spec:
             secretKeyRef:
               name: tapiriik-secret
               key: sporttracks-client-secret
+        - name: RWGPS_APIKEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: rwgps-api-key
 ---
 apiVersion: v1
 kind: Service
