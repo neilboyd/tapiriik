@@ -279,9 +279,9 @@ spec:
         - containerPort: 80
         env:
         - name: DEBUG
-          value: "True"
+          value: "False"
         - name: WEB_ROOT
-          value: "https://siiink.com/"
+          value: "https://www.siiink.com/"
         - name: ALLOWED_HOSTS
           value: "www.siiink.com"
         - name: SOFT_LAUNCH_SERVICES
