@@ -1,0 +1,371 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tapiriik-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tapiriik-redis
+  template:
+    metadata:
+      labels:
+        app: tapiriik-redis
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: tapiriik-redis
+        image: mcr.microsoft.com/oss/bitnami/redis:6.0.8
+        env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 6379
+          name: tapiriik-redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tapiriik-redis
+spec:
+  ports:
+  - port: 6379
+  selector:
+    app: tapiriik-redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tapiriik-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tapiriik-scheduler
+  template:
+    metadata:
+      labels:
+        app: tapiriik-scheduler
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: tapiriik-scheduler
+        image: neilb27/tapiriik:kubernetes
+        command: ["python3"]
+        args: ["sync_scheduler.py"]
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        env:
+        - name: DEBUG
+          value: "True"
+        - name: REDIS_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: redis-host
+        - name: RABBITMQ_BROKER_URL
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: rabbitmq-broker-url
+        - name: MONGO_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: mongo-host
+        - name: RUNKEEPER_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: runkeeper-client-id
+        - name: RUNKEEPER_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: runkeeper-client-secret
+        - name: DROPBOX_APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-app-key
+        - name: DROPBOX_APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-app-secret
+        - name: DROPBOX_FULL_APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-full-app-key
+        - name: DROPBOX_FULL_APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-full-app-secret
+        - name: STRAVA_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: strava-client-id
+        - name: STRAVA_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: strava-client-secret
+        - name: SPORTTRACKS_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: sporttracks-client-id
+        - name: SPORTTRACKS_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: sporttracks-client-secret
+        - name: RWGPS_APIKEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: rwgps-api-key
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tapiriik-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tapiriik-worker
+  template:
+    metadata:
+      labels:
+        app: tapiriik-worker
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: tapiriik-worker
+        image: neilb27/tapiriik:kubernetes
+        command: ["python3"]
+        args: ["sync_worker.py"]
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        env:
+        - name: DEBUG
+          value: "True"
+        - name: TOTAL_SYNC_WORKERS
+          value: "1"
+        - name: REDIS_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: redis-host
+        - name: RABBITMQ_BROKER_URL
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: rabbitmq-broker-url
+        - name: MONGO_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: mongo-host
+        - name: RUNKEEPER_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: runkeeper-client-id
+        - name: RUNKEEPER_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: runkeeper-client-secret
+        - name: DROPBOX_APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-app-key
+        - name: DROPBOX_APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-app-secret
+        - name: DROPBOX_FULL_APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-full-app-key
+        - name: DROPBOX_FULL_APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-full-app-secret
+        - name: STRAVA_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: strava-client-id
+        - name: STRAVA_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: strava-client-secret
+        - name: SPORTTRACKS_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: sporttracks-client-id
+        - name: SPORTTRACKS_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: sporttracks-client-secret
+        - name: RWGPS_APIKEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: rwgps-api-key
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tapiriik-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tapiriik-web
+  template:
+    metadata:
+      labels:
+        app: tapiriik-web
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: tapiriik-web
+        image: neilb27/tapiriik:kubernetes
+        command: ["python3"]
+        args: ["manage.py", "runserver", "0.0.0.0:80", "--insecure"]
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 80
+        env:
+        - name: DEBUG
+          value: "False"
+        - name: WEB_ROOT
+          value: "https://www.siiink.com/"
+        - name: ALLOWED_HOSTS
+          value: "www.siiink.com"
+        - name: SOFT_LAUNCH_SERVICES
+          value: "runkeeper,garminconnect,endomondo,trainingpeaks,trainasone,pulsstory,motivato,nikeplus,velohero,trainerroad,smashrun,beginnertriathlete,setio,singletracker,aerobia"
+        - name: REDIS_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: redis-host
+        - name: RABBITMQ_BROKER_URL
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: rabbitmq-broker-url
+        - name: MONGO_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: mongo-host
+        - name: RUNKEEPER_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: runkeeper-client-id
+        - name: RUNKEEPER_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: runkeeper-client-secret
+        - name: DROPBOX_APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-app-key
+        - name: DROPBOX_APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-app-secret
+        - name: DROPBOX_FULL_APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-full-app-key
+        - name: DROPBOX_FULL_APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: dropbox-full-app-secret
+        - name: STRAVA_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: strava-client-id
+        - name: STRAVA_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: strava-client-secret
+        - name: SPORTTRACKS_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: sporttracks-client-id
+        - name: SPORTTRACKS_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: sporttracks-client-secret
+        - name: RWGPS_APIKEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: rwgps-api-key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tapiriik-web
+  annotations:
+    service.beta.kubernetes.io/azure-dns-label-name: tapiriik-web
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: tapiriik-web
