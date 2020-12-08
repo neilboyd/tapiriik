@@ -281,9 +281,15 @@ spec:
         - name: DEBUG
           value: "False"
         - name: WEB_ROOT
-          value: "https://www.siiink.com/"
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: web-root
         - name: ALLOWED_HOSTS
-          value: "www.siiink.com"
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: allowed-hosts
         - name: SOFT_LAUNCH_SERVICES
           value: "runkeeper,garminconnect,endomondo,trainingpeaks,trainasone,pulsstory,motivato,nikeplus,velohero,trainerroad,smashrun,beginnertriathlete,setio,singletracker,aerobia"
         - name: REDIS_HOST
