@@ -26,8 +26,9 @@ or don't use Redis at all (by not defining `REDIS_HOST`).
 To run on Kubernetes,
 eg [AKS](https://docs.microsoft.com/en-us/azure/aks/):
 - edit [`kubernetes-secrets.yml`](kubernetes-secrets.yml) (or a copy of it)
-- `kubectl apply -f kubernetes-secrets.yml`
-- `kubectl apply -f kubernetes.yml`
+- `kubectl apply -f kubernetes-secrets.yml --namespace tapiriik`
+- `kubectl apply -f kubernetes.yml --namespace tapiriik`
+- add [TLS ingress](https://docs.microsoft.com/en-us/azure/aks/ingress-tls)
 
 ## Want to help with development?
 

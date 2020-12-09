@@ -59,7 +59,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: tapiriik-scheduler
-        image: neilb27/tapiriik:kubernetes
+        image: neilb27/tapiriik:latest
         command: ["python3"]
         args: ["sync_scheduler.py"]
         resources:
@@ -161,7 +161,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: tapiriik-worker
-        image: neilb27/tapiriik:kubernetes
+        image: neilb27/tapiriik:latest
         command: ["python3"]
         args: ["sync_worker.py"]
         resources:
@@ -265,7 +265,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: tapiriik-web
-        image: neilb27/tapiriik:kubernetes
+        image: neilb27/tapiriik:latest
         command: ["python3"]
         args: ["manage.py", "runserver", "0.0.0.0:80", "--insecure"]
         resources:
@@ -281,9 +281,15 @@ spec:
         - name: DEBUG
           value: "False"
         - name: WEB_ROOT
-          value: "https://www.siiink.com/"
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: web-root
         - name: ALLOWED_HOSTS
-          value: "www.siiink.com"
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: allowed-hosts
         - name: SOFT_LAUNCH_SERVICES
           value: "runkeeper,garminconnect,endomondo,trainingpeaks,trainasone,pulsstory,motivato,nikeplus,velohero,trainerroad,smashrun,beginnertriathlete,setio,singletracker,aerobia"
         - name: REDIS_HOST
