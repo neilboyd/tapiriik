@@ -3,7 +3,7 @@ name: Docker build and push, Kubernetes apply
 on:
   push:
     branches:
-      - main
+      - action
 
 jobs:
   build:
@@ -15,9 +15,8 @@ jobs:
       - name: Docker Login
         uses: docker/login-action@v1.6.0
         with:
-          registry: ${{ secrets.ACR_URL }}
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Kubernetes set context
         uses: Azure/k8s-set-context@v1
@@ -27,7 +26,12 @@ jobs:
 
       - name: Docker build, kubectl apply
         run: |
-          docker build --tag ${{ secrets.ACR_URL }}/levelupdevops:${{ github.sha }} .
-          docker push ${{ secrets.ACR_URL }}/levelupdevops:${{ github.sha }}
-          sed -i'' -e 's/ACR_URL/${{ secrets.ACR_URL }}/g' -e 's/AKS_URL/${{ secrets.AKS_URL }}/g' -e 's/IMAGE_LABEL/${{ github.sha }}/g' k8s.yaml
-          kubectl apply -f k8s.yaml
+          docker build --tag ${{ secrets.DOCKER_USERNAME }}/tapiriik:${{ github.sha }} .
+          docker push ${{ secrets.DOCKER_USERNAME }}/tapiriik:${{ github.sha }}
+          sed -i''
+            -e 's/WEB_ROOT/${{ secrets.WEB_ROOT }}/g'
+            -e 's/ALLOWED_HOSTS/${{ secrets.ALLOWED_HOSTS }}/g'
+            kubernetes-secrets.yml
+          sed -i'' -e 's/tapiriik:latest/tapiriik:${{ github.sha }}/g' kubernetes.yml
+          kubectl apply -f kubernetes-secrets.yml --namespace tapiriik
+          kubectl apply -f kubernetes.yml --namespace tapiriik
