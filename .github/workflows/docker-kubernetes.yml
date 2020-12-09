@@ -24,10 +24,13 @@ jobs:
           method: kubeconfig
           kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
-      - name: Docker build, kubectl apply
+      - name: Docker build and push
         run: |
           docker build --tag ${{ secrets.DOCKER_USERNAME }}/tapiriik:${{ github.sha }} .
           docker push ${{ secrets.DOCKER_USERNAME }}/tapiriik:${{ github.sha }}
+
+      - name: kubectl apply
+        run: |
           sed -i''
             -e 's/WEB_ROOT/${{ secrets.WEB_ROOT }}/g'
             -e 's/ALLOWED_HOSTS/${{ secrets.ALLOWED_HOSTS }}/g'
