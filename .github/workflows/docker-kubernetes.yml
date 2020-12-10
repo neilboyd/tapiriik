@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - latest
 
 jobs:
   build:
@@ -26,7 +27,9 @@ jobs:
 
       - name: Docker build and push
         run: |
-          docker build --tag ${{ secrets.DOCKER_USERNAME }}/tapiriik:${{ github.sha }} .
+          docker build . \
+            --tag ${{ secrets.DOCKER_USERNAME }}/tapiriik:${{ github.sha }} \
+            --tag ${{ secrets.DOCKER_USERNAME }}/tapiriik:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/tapiriik:${{ github.sha }}
 
       - name: kubectl apply
