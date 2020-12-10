@@ -7,6 +7,7 @@ from django.views.generic import TemplateView
 # admin.autodiscover()
 
 from tapiriik.web import views
+from tapiriik.web.views import privacy
 
 urlpatterns = patterns('',
     url(r'^$', views.dashboard, name='dashboard'),
@@ -75,7 +76,7 @@ urlpatterns = patterns('',
 
     url(r'^ab/begin/(?P<key>[^/]+)$', views.ab_web_experiment_begin, name='ab_web_experiment_begin'),
 
-    url(r'^privacy$', 'tapiriik.web.views.privacy.privacy', name='privacy'),
+    url(r'^privacy$', privacy.privacy, name='privacy'),
 
     url(r'^garmin_connect_users$', TemplateView.as_view(template_name='static/garmin_connect_users.html'), name='garmin_connect_users'),
     url(r'^garmin_connect_bad_data$', TemplateView.as_view(template_name='static/garmin_connect_bad_data.html'), name='garmin_connect_users'),
