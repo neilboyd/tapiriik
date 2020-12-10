@@ -30,7 +30,7 @@ jobs:
           docker build . \
             --tag ${{ secrets.DOCKER_USERNAME }}/tapiriik:${{ github.sha }} \
             --tag ${{ secrets.DOCKER_USERNAME }}/tapiriik:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/tapiriik:${{ github.sha }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/tapiriik
 
       - name: kubectl apply
         # NB: the secrets need to be friendly to sed, eg & should be escaped as \&
