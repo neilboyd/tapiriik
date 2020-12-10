@@ -1,6 +1,6 @@
 version: '3'
 services:
-  tapiriik:
+  tapiriik_web:
     build: .
     environment:
       - DEBUG=True
