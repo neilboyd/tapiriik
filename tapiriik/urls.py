@@ -11,32 +11,32 @@ from tapiriik.web import views
 urlpatterns = patterns('',
     url(r'^$', views.dashboard, name='dashboard'),
 
-    url(r'^auth/redirect/(?P<service>[^/]+)$', 'tapiriik.web.views.oauth.authredirect', name='oauth_redirect', ),
-    url(r'^auth/redirect/(?P<service>[^/]+)/(?P<level>.+)$', 'tapiriik.web.views.oauth.authredirect', name='oauth_redirect', ),
-    url(r'^auth/return/(?P<service>[^/]+)$', 'tapiriik.web.views.oauth.authreturn', name='oauth_return', ),
-    url(r'^auth/return/(?P<service>[^/]+)/(?P<level>.+)$', 'tapiriik.web.views.oauth.authreturn', name='oauth_return', ),  # django's URL magic couldn't handle the equivalent regex
-    url(r'^auth/login/(?P<service>.+)$', 'tapiriik.web.views.auth_login', name='auth_simple', ),
-    url(r'^auth/login-ajax/(?P<service>.+)$', 'tapiriik.web.views.auth_login_ajax', name='auth_simple_ajax', ),
-    url(r'^auth/persist-ajax/(?P<service>.+)$', 'tapiriik.web.views.auth_persist_extended_auth_ajax', name='auth_persist_extended_auth_ajax', ),
-    url(r'^auth/disconnect/(?P<service>.+)$', 'tapiriik.web.views.auth_disconnect', name='auth_disconnect', ),
-    url(r'^auth/disconnect-ajax/(?P<service>.+)$', 'tapiriik.web.views.auth_disconnect_ajax', name='auth_disconnect_ajax', ),
-    url(r'^auth/logout$', 'tapiriik.web.views.auth_logout', name='auth_logout', ),
+    url(r'^auth/redirect/(?P<service>[^/]+)$', 'tapiriik.web.views.oauth.authredirect', name='oauth_redirect'),
+    url(r'^auth/redirect/(?P<service>[^/]+)/(?P<level>.+)$', 'tapiriik.web.views.oauth.authredirect', name='oauth_redirect'),
+    url(r'^auth/return/(?P<service>[^/]+)$', 'tapiriik.web.views.oauth.authreturn', name='oauth_return'),
+    url(r'^auth/return/(?P<service>[^/]+)/(?P<level>.+)$', 'tapiriik.web.views.oauth.authreturn', name='oauth_return'),  # django's URL magic couldn't handle the equivalent regex
+    url(r'^auth/login/(?P<service>.+)$', 'tapiriik.web.views.auth_login', name='auth_simple'),
+    url(r'^auth/login-ajax/(?P<service>.+)$', 'tapiriik.web.views.auth_login_ajax', name='auth_simple_ajax'),
+    url(r'^auth/persist-ajax/(?P<service>.+)$', 'tapiriik.web.views.auth_persist_extended_auth_ajax', name='auth_persist_extended_auth_ajax'),
+    url(r'^auth/disconnect/(?P<service>.+)$', 'tapiriik.web.views.auth_disconnect', name='auth_disconnect'),
+    url(r'^auth/disconnect-ajax/(?P<service>.+)$', 'tapiriik.web.views.auth_disconnect_ajax', name='auth_disconnect_ajax'),
+    url(r'^auth/logout$', 'tapiriik.web.views.auth_logout', name='auth_logout'),
 
-    url(r'^account/setemail$', 'tapiriik.web.views.account_setemail', name='account_set_email', ),
-    url(r'^account/settz$', 'tapiriik.web.views.account_settimezone', name='account_set_timezone', ),
-    url(r'^account/configure$', 'tapiriik.web.views.account_setconfig', name='account_set_config', ),
+    url(r'^account/setemail$', 'tapiriik.web.views.account_setemail', name='account_set_email'),
+    url(r'^account/settz$', 'tapiriik.web.views.account_settimezone', name='account_set_timezone'),
+    url(r'^account/configure$', 'tapiriik.web.views.account_setconfig', name='account_set_config'),
 
-    url(r'^account/rollback/?$', 'tapiriik.web.views.account_rollback_initiate', name='account_rollback_initiate', ),
-    url(r'^account/rollback/(?P<task_id>.+)$', 'tapiriik.web.views.account_rollback_status', name='account_rollback_status', ),
+    url(r'^account/rollback/?$', 'tapiriik.web.views.account_rollback_initiate', name='account_rollback_initiate'),
+    url(r'^account/rollback/(?P<task_id>.+)$', 'tapiriik.web.views.account_rollback_status', name='account_rollback_status'),
 
-    url(r'^rollback$', 'tapiriik.web.views.rollback_dashboard', name='rollback_dashboard', ),
+    url(r'^rollback$', 'tapiriik.web.views.rollback_dashboard', name='rollback_dashboard'),
 
-    url(r'^configure/save/(?P<service>.+)?$', 'tapiriik.web.views.config.config_save', name='config_save', ),
-    url(r'^configure/dropbox$', 'tapiriik.web.views.config.dropbox', name='dropbox_config', ),
-    url(r'^configure/flow/save/(?P<service>.+)?$', 'tapiriik.web.views.config.config_flow_save', name='config_flow_save', ),
-    url(r'^settings/?$', 'tapiriik.web.views.settings.settings', name='settings_panel', ),
+    url(r'^configure/save/(?P<service>.+)?$', 'tapiriik.web.views.config.config_save', name='config_save'),
+    url(r'^configure/dropbox$', 'tapiriik.web.views.config.dropbox', name='dropbox_config'),
+    url(r'^configure/flow/save/(?P<service>.+)?$', 'tapiriik.web.views.config.config_flow_save', name='config_flow_save'),
+    url(r'^settings/?$', 'tapiriik.web.views.settings.settings', name='settings_panel'),
 
-    url(r'^dropbox/browse-ajax/?$', 'tapiriik.web.views.dropbox.browse', name='dropbox_browse_ajax', ),
+    url(r'^dropbox/browse-ajax/?$', 'tapiriik.web.views.dropbox.browse', name='dropbox_browse_ajax'),
 
     url(r'^sync/status$', 'tapiriik.web.views.sync_status', name='sync_status'),
     url(r'^sync/activity$', 'tapiriik.web.views.sync_recent_activity', name='sync_recent_activity'),
