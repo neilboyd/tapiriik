@@ -6,8 +6,10 @@ from django.views.generic import TemplateView
 # from django.contrib import admin
 # admin.autodiscover()
 
+import tapiriik.web.views
+
 urlpatterns = patterns('',
-    url(r'^$', 'tapiriik.web.views.dashboard', name='dashboard'),
+    url(r'^$', tapiriik.web.views.dashboard, name='dashboard'),
 
     url(r'^auth/redirect/(?P<service>[^/]+)$', 'tapiriik.web.views.oauth.authredirect', {}, name='oauth_redirect', ),
     url(r'^auth/redirect/(?P<service>[^/]+)/(?P<level>.+)$', 'tapiriik.web.views.oauth.authredirect', {}, name='oauth_redirect', ),
