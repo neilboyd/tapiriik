@@ -5,7 +5,7 @@ pytz
 lxml
 dropbox==9.5.0
 python-dateutil
-Django==1.11.29
+django==1.11.29
 pycryptodome
 celery
 django-pipeline==1.5.1
@@ -14,3 +14,4 @@ redis==2.10.6
 django-ipware
 smashrun-client>=0.6.0
 beautifulsoup4
+jinja2
