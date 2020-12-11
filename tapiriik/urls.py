@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.generic import TemplateView
 
@@ -13,7 +13,7 @@ from tapiriik.web.views import oauth
 from tapiriik.web.views import privacy
 from tapiriik.web.views import settings as settings_panel
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', views.dashboard, name='dashboard'),
 
     url(r'^auth/redirect/(?P<service>[^/]+)$', oauth.authredirect, name='oauth_redirect'),
@@ -97,6 +97,6 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
-)
+]
 
 urlpatterns += staticfiles_urlpatterns()
