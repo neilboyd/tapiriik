@@ -114,13 +114,6 @@ SECRET_KEY = 'vag26gs^t+_y0msoemqo%_5gb*th(i!v$l6##bq9tu2ggcsn13'
 CREDENTIAL_STORAGE_PUBLIC_KEY = b"NotTheRealKeyFYI"
 CREDENTIAL_STORAGE_PRIVATE_KEY = None
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
-
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -140,22 +133,34 @@ ROOT_URLCONF = 'tapiriik.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'tapiriik.wsgi.application'
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    "I:/wamp/www/tapiriik/tapiriik/web/templates",
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'tapiriik.web.views.ab_experiment_context',
-    'tapiriik.web.context_processors.user',
-    'tapiriik.web.context_processors.config',
-    'tapiriik.web.context_processors.js_bridge',
-    'tapiriik.web.context_processors.stats',
-    'tapiriik.web.context_processors.providers',
-    'tapiriik.web.context_processors.celebration_mode',
-    'django.core.context_processors.static',)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'OPTIONS': {
+            'context_processors': [
+                'tapiriik.web.views.ab_experiment_context',
+                'tapiriik.web.context_processors.user',
+                'tapiriik.web.context_processors.config',
+                'tapiriik.web.context_processors.js_bridge',
+                'tapiriik.web.context_processors.stats',
+                'tapiriik.web.context_processors.providers',
+                'tapiriik.web.context_processors.celebration_mode',
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+            ],
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ]
+        },
+    },
+]
 
 INSTALLED_APPS = (
     'django.contrib.sessions',
