@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from tapiriik.database import db
-from tapiriik.settings import WITHDRAWN_SERVICES
+from tapiriik.settings import WEB_ROOT, WITHDRAWN_SERVICES
 import json
 import datetime
 
 def activities_dashboard(req):
     if not req.user:
-        return redirect("/")
+        return redirect(WEB_ROOT)
     return render(req, "activities-dashboard.html")
 
 def activities_fetch_json(req):
