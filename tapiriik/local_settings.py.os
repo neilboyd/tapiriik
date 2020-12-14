@@ -16,7 +16,6 @@ WEB_ROOT = os.getenv("WEB_ROOT", "http://localhost:8000")
 # key = RSA.generate(2048)
 # key.exportKey("PEM")
 # key.publickey().exportKey("PEM")
-# NB: append .__repr__() to the above commands to get the secrets for the pipeline
 CREDENTIAL_STORAGE_PRIVATE_KEY = os.getenv("CREDENTIAL_STORAGE_PRIVATE_KEY", None)
 CREDENTIAL_STORAGE_PUBLIC_KEY = os.getenv("CREDENTIAL_STORAGE_PUBLIC_KEY", b"NotTheRealKeyFYI")
 
