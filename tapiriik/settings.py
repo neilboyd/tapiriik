@@ -3,7 +3,6 @@ from datetime import datetime
 # Django settings for tapiriik project.
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 PIPELINE_ENABLED = False
 
 ADMINS = (
@@ -137,6 +136,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
+        'TEMPLATE_DEBUG': DEBUG,
         'OPTIONS': {
             'context_processors': [
                 'tapiriik.web.views.ab_experiment_context',
