@@ -136,6 +136,16 @@ spec:
             secretKeyRef:
               name: tapiriik-secret
               key: mongo-host
+        - name: CREDENTIAL_STORAGE_PUBLIC_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: credential-storage-public-key
+        - name: CREDENTIAL_STORAGE_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: credential-storage-private-key
         - name: RUNKEEPER_CLIENT_ID
           valueFrom:
             secretKeyRef:
@@ -252,6 +262,11 @@ spec:
             secretKeyRef:
               name: tapiriik-secret
               key: mongo-host
+        - name: CREDENTIAL_STORAGE_PUBLIC_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: credential-storage-public-key
         - name: RUNKEEPER_CLIENT_ID
           valueFrom:
             secretKeyRef:
