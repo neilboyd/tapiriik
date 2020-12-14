@@ -15,8 +15,8 @@ WEB_ROOT = os.getenv("WEB_ROOT", "http://localhost:8000")
 
 # Do what credentialstore_keygen.py does to get the default value of the keys
 key = RSA.generate(2048)
-CREDENTIAL_STORAGE_PRIVATE_KEY = os.getenv("CREDENTIAL_STORAGE_PRIVATE_KEY", key.exportKey("DER").__repr__())
-CREDENTIAL_STORAGE_PUBLIC_KEY = os.getenv("CREDENTIAL_STORAGE_PUBLIC_KEY", key.publickey().exportKey("DER").__repr__())
+CREDENTIAL_STORAGE_PRIVATE_KEY = os.getenv("CREDENTIAL_STORAGE_PRIVATE_KEY", key.exportKey("DER"))
+CREDENTIAL_STORAGE_PUBLIC_KEY = os.getenv("CREDENTIAL_STORAGE_PUBLIC_KEY", key.publickey().exportKey("DER"))
 
 # This is where sync logs show up
 # It is the only directory that needs to be writable by the webapp user
