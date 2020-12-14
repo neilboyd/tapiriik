@@ -3,7 +3,6 @@ from datetime import datetime
 # Django settings for tapiriik project.
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 PIPELINE_ENABLED = False
 
 ADMINS = (

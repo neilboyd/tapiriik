@@ -5,12 +5,19 @@ from datetime import timedelta
 # including mongodb, rabbitmq, and redis connection settings
 
 DEBUG = os.getenv("DEBUG", False) in (True, 'True')
-TEMPLATE_DEBUG = os.getenv("TEMPLATE_DEBUG", DEBUG) in (True, 'True')
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 # This is the url that is used for redirects after logging in to each service
 # It only needs to be accessible to the client browser
 WEB_ROOT = os.getenv("WEB_ROOT", "http://localhost:8000")
+
+# In order the generate the keys to use for the environment variables:
+# from Crypto.PublicKey import RSA
+# key = RSA.generate(2048)
+# key.exportKey("PEM")
+# key.publickey().exportKey("PEM")
+CREDENTIAL_STORAGE_PRIVATE_KEY = os.getenv("CREDENTIAL_STORAGE_PRIVATE_KEY", None)
+CREDENTIAL_STORAGE_PUBLIC_KEY = os.getenv("CREDENTIAL_STORAGE_PUBLIC_KEY", b"NotTheRealKeyFYI")
 
 # This is where sync logs show up
 # It is the only directory that needs to be writable by the webapp user
