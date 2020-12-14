@@ -17,9 +17,6 @@ RUN pip3 install -r requirements.txt
 # copy settings file
 RUN cp tapiriik/local_settings.py.os tapiriik/local_settings.py
 
-# generate keys
-RUN python3 credentialstore_keygen.py >> tapiriik/local_settings.py
-
 # generate static files
 RUN python3 manage.py collectstatic --noinput
 

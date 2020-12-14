@@ -1,5 +1,6 @@
 import os
 from datetime import timedelta
+from Crypto.PublicKey import RSA
 
 # Look in settings.py for more settings to override
 # including mongodb, rabbitmq, and redis connection settings
@@ -11,6 +12,11 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 # This is the url that is used for redirects after logging in to each service
 # It only needs to be accessible to the client browser
 WEB_ROOT = os.getenv("WEB_ROOT", "http://localhost:8000")
+
+# Do what credentialstore_keygen.py does to get the default value of the keys
+key = RSA.generate(2048)
+CREDENTIAL_STORAGE_PRIVATE_KEY = os.getenv("CREDENTIAL_STORAGE_PRIVATE_KEY", key.exportKey("DER").__repr__())
+CREDENTIAL_STORAGE_PUBLIC_KEY = os.getenv("CREDENTIAL_STORAGE_PUBLIC_KEY", key.publickey().exportKey("DER").__repr__())
 
 # This is where sync logs show up
 # It is the only directory that needs to be writable by the webapp user
