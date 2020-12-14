@@ -16,6 +16,11 @@ WEB_ROOT = os.getenv("WEB_ROOT", "http://localhost:8000")
 key = RSA.generate(2048)
 CREDENTIAL_STORAGE_PRIVATE_KEY = os.getenv("CREDENTIAL_STORAGE_PRIVATE_KEY", key.exportKey("DER"))
 CREDENTIAL_STORAGE_PUBLIC_KEY = os.getenv("CREDENTIAL_STORAGE_PUBLIC_KEY", key.publickey().exportKey("DER"))
+# In order the generate the keys to use for the environment variables:
+# from Crypto.PublicKey import RSA
+# key = RSA.generate(2048)
+# key.exportKey("PEM")
+# key.publickey().exportKey("PEM")
 
 # This is where sync logs show up
 # It is the only directory that needs to be writable by the webapp user
