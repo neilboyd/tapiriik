@@ -15,14 +15,6 @@ To run locally with [Docker Compose](https://docs.docker.com/compose/):
 - stop `docker-compose down`
 - rebuild in case of any changes `docker-compose build`, or `docker-compose up -d --build`
 
-For convenience, everything is in one container.
-In order to run at scale,
-you should use an external RabbitMQ and MongoDB instance.
-That leaves web, sync servers and Redis which can live together and scale together.
-[Ideally, Redis should also be an external instance](https://github.com/cpfair/tapiriik/wiki/tapiriik.com-infrastructure#web),
-but it's okay to leave it together with the web instances,
-or don't use Redis at all (by not defining `REDIS_HOST`).
-
 To run on Kubernetes,
 eg [AKS](https://docs.microsoft.com/en-us/azure/aks/):
 - edit [`kubernetes-secrets.yml`](kubernetes-secrets.yml) (or a copy of it)
