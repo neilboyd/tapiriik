@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - secret
 
 jobs:
   build:
