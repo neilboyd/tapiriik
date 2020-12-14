@@ -21,6 +21,7 @@ CREDENTIAL_STORAGE_PUBLIC_KEY = os.getenv("CREDENTIAL_STORAGE_PUBLIC_KEY", key.p
 # key = RSA.generate(2048)
 # key.exportKey("PEM")
 # key.publickey().exportKey("PEM")
+# NB: append .__repr__() to the above commands to get the secrets for the pipeline
 
 # This is where sync logs show up
 # It is the only directory that needs to be writable by the webapp user
