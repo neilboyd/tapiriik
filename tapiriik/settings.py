@@ -136,7 +136,6 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
-        'TEMPLATE_DEBUG': DEBUG,
         'OPTIONS': {
             'context_processors': [
                 'tapiriik.web.views.ab_experiment_context',
