@@ -12,10 +12,10 @@ function validatePrice() {
 function preSubmit(){
 	if ($(".paymentForm button[name=submit]").hasClass("disabled")) return false;
 	var amount = $(".paymentForm input[type=text]").val();
-	var prorated = Math.min(365, Math.round(amount / 2 * 365));
-	$(".paymentForm input[name=item_name]").val("Automatic tapiriik synchronization (" + prorated + " days)");
+	var prorated = Math.min(365, Math.round(amount / 5 * 365));
+	$(".paymentForm input[name=item_name]").val("Automatic siiink.com synchronization (" + prorated + " days)");
 	if (prorated < 365) {
-		alert("Seriously, it's just $2. Your account will be automatically synchronized for the next " + prorated + " days.");
+		alert("Seriously, it's just $5. Your account will be automatically synchronized for the next " + prorated + " days.");
 	}
 }
 $(function(){
