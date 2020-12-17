@@ -17,6 +17,11 @@ key = RSA.generate(2048)
 CREDENTIAL_STORAGE_PRIVATE_KEY = os.getenv("CREDENTIAL_STORAGE_PRIVATE_KEY", key.exportKey("PEM"))
 CREDENTIAL_STORAGE_PUBLIC_KEY = os.getenv("CREDENTIAL_STORAGE_PUBLIC_KEY", key.publickey().exportKey("PEM"))
 
+# PayPal
+PP_WEBSCR = os.getenv("PP_WEBSCR", "https://www.sandbox.paypal.com/cgi-bin/webscr")
+PP_BUTTON_ID = os.getenv("PP_BUTTON_ID", "XD6G9Z7VMRM3Q")
+PP_RECEIVER_ID = os.getenv("PP_RECEIVER_ID", "NR6NTNSRT7NDJ")
+
 # This is where sync logs show up
 # It is the only directory that needs to be writable by the webapp user
 USER_SYNC_LOGS = "./"
