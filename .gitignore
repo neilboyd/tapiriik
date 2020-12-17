@@ -1,6 +1,7 @@
 *.log
 *.pot
 *.pyc
+*.orig
 local_settings.py
 *.sublime-workspace
 private/
