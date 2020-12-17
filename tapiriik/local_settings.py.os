@@ -1,5 +1,6 @@
 import os
 from datetime import timedelta
+from Crypto.PublicKey import RSA
 
 # Look in settings.py for more settings to override
 # including mongodb, rabbitmq, and redis connection settings
@@ -11,13 +12,10 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 # It only needs to be accessible to the client browser
 WEB_ROOT = os.getenv("WEB_ROOT", "http://localhost:8000")
 
-# In order the generate the keys to use for the environment variables:
-# from Crypto.PublicKey import RSA
-# key = RSA.generate(2048)
-# key.exportKey("PEM")
-# key.publickey().exportKey("PEM")
-CREDENTIAL_STORAGE_PRIVATE_KEY = os.getenv("CREDENTIAL_STORAGE_PRIVATE_KEY", None)
-CREDENTIAL_STORAGE_PUBLIC_KEY = os.getenv("CREDENTIAL_STORAGE_PUBLIC_KEY", b"NotTheRealKeyFYI")
+# Default is a new key every time, which is okay for testing locally, but won't be able to decrypt next time
+key = RSA.generate(2048)
+CREDENTIAL_STORAGE_PRIVATE_KEY = os.getenv("CREDENTIAL_STORAGE_PRIVATE_KEY", key.exportKey("PEM"))
+CREDENTIAL_STORAGE_PUBLIC_KEY = os.getenv("CREDENTIAL_STORAGE_PUBLIC_KEY", key.publickey().exportKey("PEM"))
 
 # This is where sync logs show up
 # It is the only directory that needs to be writable by the webapp user
