@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - secret
+      - endo-fixes
 
 jobs:
   build:
