@@ -41,6 +41,9 @@ jobs:
             -e 's#REDIS_HOST#${{ secrets.REDIS_HOST }}#g' \
             -e 's#RABBITMQ_BROKER_URL#${{ secrets.RABBITMQ_BROKER_URL }}#g' \
             -e 's#MONGO_HOST#${{ secrets.MONGO_HOST }}#g' \
+            -e 's#PP_WEBSCR#${{ secrets.PP_WEBSCR }}#g' \
+            -e 's#PP_BUTTON_ID#${{ secrets.PP_BUTTON_ID }}#g' \
+            -e 's#PP_RECEIVER_ID#${{ secrets.PP_RECEIVER_ID }}#g' \
             -e 's#CREDENTIAL_STORAGE_PRIVATE_KEY#${{ secrets.CREDENTIAL_STORAGE_PRIVATE_KEY }}#g' \
             -e 's#CREDENTIAL_STORAGE_PUBLIC_KEY#${{ secrets.CREDENTIAL_STORAGE_PUBLIC_KEY }}#g' \
             -e 's/RUNKEEPER_CLIENT_ID/${{ secrets.RUNKEEPER_CLIENT_ID }}/g' \

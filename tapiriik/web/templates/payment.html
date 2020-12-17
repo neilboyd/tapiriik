@@ -26,9 +26,9 @@ $(function(){
 <form action="{{ config.pp.url }}" method="post" class="paymentForm" style="text-align:center;display:none;" onsubmit="preSubmit()">
 	<hr/>
 	<h3>Pay what you want for 1 year of automatic synchronization</h3>
-	<p>Running siiink.com costs money: servers, backups, maintenance &amp; more. <b>$5 a year</b> covers these costs so tapiriik will always run smoothly. Of course, I'd be much obliged if you threw in something extra.</p>
+	<p>Running siiink.com costs money: servers, backups, maintenance &amp; more. <b>$5 a year</b> covers these costs so it will always run smoothly. Of course, I'd be much obliged if you threw in something extra.</p>
 	<input type="hidden" name="cmd" value="_xclick">
-	<input type="hidden" name="business" value="GZYUSWR6MQVGJ">
+	<input type="hidden" name="business" value="{{ config.pp.receiverId }}">
 	<input type="hidden" name="lc" value="CA">
 	<input type="hidden" name="item_name" value="Automatic siiink.com synchronization (365 days)">
 	<span style="font-size: 150%;">$</span> <input type="text" name="amount" value="10.00" style="width:75px; text-align:center;"><br/>
