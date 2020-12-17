@@ -1,4 +1,4 @@
-from tapiriik.settings import PP_WEBSCR, PP_RECEIVER_ID, PAYMENT_CURRENCY
+from tapiriik.settings import WEB_ROOT, PP_WEBSCR, PP_RECEIVER_ID, PAYMENT_CURRENCY
 from tapiriik.auth import User
 from tapiriik.payments import Payments, ExternalPaymentProvider
 from tapiriik.web.views.ab import ab_experiment_complete, ab_register_experiment
@@ -51,7 +51,7 @@ def payments_send_confirmation(request, email):
 
 def payments_return(req):
     if req.user is None:
-        return redirect("/")
+        return redirect(WEB_ROOT)
 
     if User.HasActivePayment(req.user):
         return redirect("payments_confirmed")
@@ -60,7 +60,7 @@ def payments_return(req):
 
 def payments_confirmed(req):
     if req.user is None or not User.HasActivePayment(req.user):
-        return redirect("/")
+        return redirect(WEB_ROOT)
     return render(req, "payments/confirmed.html")
 
 ab_register_experiment("autosync", [2,5])
@@ -68,10 +68,10 @@ ab_register_experiment("autosync", [2,5])
 def payments_claim(req):
     err = False
     if req.user is None:
-        return redirect("/")
+        return redirect(WEB_ROOT)
     if "email" in req.POST:
         if payments_claim_initiate(req, req.user, req.POST["email"]):
-            return redirect("/")
+            return redirect(WEB_ROOT)
         else:
             err = True
     return render(req, "payments/claim.html", {"err": err})
