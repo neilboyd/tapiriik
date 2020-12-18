@@ -267,11 +267,6 @@ spec:
             secretKeyRef:
               name: tapiriik-secret
               key: pp-webscr
-        - name: PP_BUTTON_ID
-          valueFrom:
-            secretKeyRef:
-              name: tapiriik-secret
-              key: pp-button-id
         - name: PP_RECEIVER_ID
           valueFrom:
             secretKeyRef:

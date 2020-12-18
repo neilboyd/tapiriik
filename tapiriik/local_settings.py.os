@@ -19,7 +19,6 @@ CREDENTIAL_STORAGE_PUBLIC_KEY = os.getenv("CREDENTIAL_STORAGE_PUBLIC_KEY", key.p
 
 # PayPal
 PP_WEBSCR = os.getenv("PP_WEBSCR", "https://www.sandbox.paypal.com/cgi-bin/webscr")
-PP_BUTTON_ID = os.getenv("PP_BUTTON_ID", "XD6G9Z7VMRM3Q")
 PP_RECEIVER_ID = os.getenv("PP_RECEIVER_ID", "NR6NTNSRT7NDJ")
 
 # This is where sync logs show up
