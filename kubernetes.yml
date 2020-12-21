@@ -245,6 +245,31 @@ spec:
             secretKeyRef:
               name: tapiriik-secret
               key: allowed-hosts
+        - name: EMAIL_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: email-host
+        - name: EMAIL_PORT
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: email-port
+        - name: EMAIL_USE_TLS
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: email-use-tls
+        - name: EMAIL_HOST_USER
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: email-host-user
+        - name: EMAIL_HOST_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: email-host-password
         - name: SOFT_LAUNCH_SERVICES
           value: "runkeeper,garminconnect,endomondo,trainingpeaks,trainasone,pulsstory,motivato,nikeplus,velohero,trainerroad,smashrun,beginnertriathlete,setio,singletracker,aerobia"
         - name: REDIS_HOST

@@ -42,6 +42,7 @@ jobs:
             -e 's/EMAIL_HOST_PASSWORD/${{ secrets.EMAIL_HOST_PASSWORD }}/g' \
             -e 's/EMAIL_HOST/${{ secrets.EMAIL_HOST }}/g' \
             -e 's/EMAIL_PORT/${{ secrets.EMAIL_PORT }}/g' \
+            -e 's/EMAIL_USE_TLS/${{ secrets.EMAIL_USE_TLS }}/g' \
             -e 's#REDIS_HOST#${{ secrets.REDIS_HOST }}#g' \
             -e 's#RABBITMQ_BROKER_URL#${{ secrets.RABBITMQ_BROKER_URL }}#g' \
             -e 's#MONGO_HOST#${{ secrets.MONGO_HOST }}#g' \
