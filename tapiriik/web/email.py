@@ -1,14 +1,13 @@
 from django.template.loader import get_template
-from django.template import Context
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 
 def generate_message_from_template(template, context):
 	context["STATIC_URL"] = settings.STATIC_URL
 	# Mandrill is set up to inline the CSS and generate a plaintext copy.
-	html_message = get_template(template).render(Context(context)).strip()
+	html_message = get_template(template).render(context).strip()
 	context["plaintext"] = True
-	plaintext_message = get_template(template).render(Context(context)).strip()
+	plaintext_message = get_template(template).render(context).strip()
 	return html_message, plaintext_message
 
 def send_email(recipient_list, subject, html_message, plaintext_message=None):
