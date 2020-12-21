@@ -12,6 +12,12 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 # It only needs to be accessible to the client browser
 WEB_ROOT = os.getenv("WEB_ROOT", "http://localhost:8000")
 
+# email settings
+EMAIL_HOST = os.getenv("EMAIL_HOST", "localhost")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", "25"))
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+
 # Default is a new key every time, which is okay for testing locally, but won't be able to decrypt next time
 key = RSA.generate(2048)
 CREDENTIAL_STORAGE_PRIVATE_KEY = os.getenv("CREDENTIAL_STORAGE_PRIVATE_KEY", key.exportKey("PEM"))
