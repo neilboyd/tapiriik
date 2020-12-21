@@ -38,10 +38,10 @@ jobs:
           sed -i'' \
             -e 's#WEB_ROOT#${{ secrets.WEB_ROOT }}#g' \
             -e 's/ALLOWED_HOSTS/${{ secrets.ALLOWED_HOSTS }}/g' \
-            -e 's/EMAIL_HOST/${{ secrets.EMAIL_HOST }}/g' \
-            -e 's/EMAIL_PORT/${{ secrets.EMAIL_PORT }}/g' \
             -e 's/EMAIL_HOST_USER/${{ secrets.EMAIL_HOST_USER }}/g' \
             -e 's/EMAIL_HOST_PASSWORD/${{ secrets.EMAIL_HOST_PASSWORD }}/g' \
+            -e 's/EMAIL_HOST/${{ secrets.EMAIL_HOST }}/g' \
+            -e 's/EMAIL_PORT/${{ secrets.EMAIL_PORT }}/g' \
             -e 's#REDIS_HOST#${{ secrets.REDIS_HOST }}#g' \
             -e 's#RABBITMQ_BROKER_URL#${{ secrets.RABBITMQ_BROKER_URL }}#g' \
             -e 's#MONGO_HOST#${{ secrets.MONGO_HOST }}#g' \
