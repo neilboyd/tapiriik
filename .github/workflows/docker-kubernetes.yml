@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - endo-fixes
+      - paypal
 
 jobs:
   build:
@@ -38,9 +38,16 @@ jobs:
           sed -i'' \
             -e 's#WEB_ROOT#${{ secrets.WEB_ROOT }}#g' \
             -e 's/ALLOWED_HOSTS/${{ secrets.ALLOWED_HOSTS }}/g' \
+            -e 's/EMAIL_HOST_USER/${{ secrets.EMAIL_HOST_USER }}/g' \
+            -e 's/EMAIL_HOST_PASSWORD/${{ secrets.EMAIL_HOST_PASSWORD }}/g' \
+            -e 's/EMAIL_HOST/${{ secrets.EMAIL_HOST }}/g' \
+            -e 's/EMAIL_PORT/${{ secrets.EMAIL_PORT }}/g' \
+            -e 's/EMAIL_USE_TLS/${{ secrets.EMAIL_USE_TLS }}/g' \
             -e 's#REDIS_HOST#${{ secrets.REDIS_HOST }}#g' \
             -e 's#RABBITMQ_BROKER_URL#${{ secrets.RABBITMQ_BROKER_URL }}#g' \
             -e 's#MONGO_HOST#${{ secrets.MONGO_HOST }}#g' \
+            -e 's#PP_WEBSCR#${{ secrets.PP_WEBSCR }}#g' \
+            -e 's#PP_RECEIVER_ID#${{ secrets.PP_RECEIVER_ID }}#g' \
             -e 's#CREDENTIAL_STORAGE_PRIVATE_KEY#${{ secrets.CREDENTIAL_STORAGE_PRIVATE_KEY }}#g' \
             -e 's#CREDENTIAL_STORAGE_PUBLIC_KEY#${{ secrets.CREDENTIAL_STORAGE_PUBLIC_KEY }}#g' \
             -e 's/RUNKEEPER_CLIENT_ID/${{ secrets.RUNKEEPER_CLIENT_ID }}/g' \

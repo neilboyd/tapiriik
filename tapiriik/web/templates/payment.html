@@ -12,10 +12,10 @@ function validatePrice() {
 function preSubmit(){
 	if ($(".paymentForm button[name=submit]").hasClass("disabled")) return false;
 	var amount = $(".paymentForm input[type=text]").val();
-	var prorated = Math.min(365, Math.round(amount / 2 * 365));
-	$(".paymentForm input[name=item_name]").val("Automatic tapiriik synchronization (" + prorated + " days)");
+	var prorated = Math.min(365, Math.round(amount / 5 * 365));
+	$(".paymentForm input[name=item_name]").val("Automatic siiink.com synchronization (" + prorated + " days)");
 	if (prorated < 365) {
-		alert("Seriously, it's just $2. Your account will be automatically synchronized for the next " + prorated + " days.");
+		alert("Seriously, it's just $5. Your account will be automatically synchronized for the next " + prorated + " days.");
 	}
 }
 $(function(){
@@ -26,41 +26,25 @@ $(function(){
 <form action="{{ config.pp.url }}" method="post" class="paymentForm" style="text-align:center;display:none;" onsubmit="preSubmit()">
 	<hr/>
 	<h3>Pay what you want for 1 year of automatic synchronization</h3>
-	<p>Running tapiriik costs money: servers, backups, maintenance &amp; more. <b>$2 a year</b> covers these costs so tapiriik will always run smoothly. Of course, I'd be much obliged if you threw in something extra.</p>
+	<p>Running siiink.com costs money: servers, backups, maintenance &amp; more. <b>$5 a year</b> covers these costs so it will always run smoothly. Of course, I'd be much obliged if you threw in something extra.</p>
 	<input type="hidden" name="cmd" value="_xclick">
-	<input type="hidden" name="business" value="GZYUSWR6MQVGJ">
+	<input type="hidden" name="business" value="{{ config.pp.receiverId }}">
 	<input type="hidden" name="lc" value="CA">
-	<input type="hidden" name="item_name" value="Automatic tapiriik synchronization (365 days)">
-	<span style="font-size: 150%;">$</span> <input type="text" name="amount" value="5.00" style="width:75px; text-align:center;"><br/>
+	<input type="hidden" name="item_name" value="Automatic siiink.com synchronization (365 days)">
+	<span style="font-size: 150%;">$</span> <input type="text" name="amount" value="10.00" style="width:75px; text-align:center;"><br/>
 	<input type="hidden" name="on0" value="Tax Jurisdiction">
-	<select name="os0" required style="font-size: 100%; margin-top: 10px">
-		<option value="">I live in...</option>
-		<option value="n/a">Outside of Canada</option>
-		<option value="AB">Alberta</option>
-		<option value="BC">British Columbia</option>
-		<option value="MB">Manitoba</option>
-		<option value="NB">New Brunswick</option>
-		<option value="NL">Newfoundland and Labrador</option>
-		<option value="NT">Northwest Territories</option>
-		<option value="NS">Nova Scotia</option>
-		<option value="NU">Nunavut</option>
-		<option value="ON">Ontario</option>
-		<option value="PE">Prince Edward Island</option>
-		<option value="QC">Quebec</option>
-		<option value="SK">Saskatchewan</option>
-		<option value="YK">Yukon</option>
-	</select><br/>
+	<input type="hidden" name="os0" value="n/a">
 	<input type="hidden" name="currency_code" value="USD">
 	<input type="hidden" name="button_subtype" value="services">
 	<input type="hidden" name="no_note" value="1">
 	<input type="hidden" name="no_shipping" value="1">
 	<input type="hidden" name="rm" value="1">
-	<input type="hidden" name="return" value="https://www.siiink.com/payments/return">
-	<input type="hidden" name="cancel_return" value="https://www.siiink.com/">
+	<input type="hidden" name="return" value="{{ config.webRoot }}/payments/return">
+	<input type="hidden" name="cancel_return" value="{{ config.webRoot }}">
 	<input type="hidden" name="tax_rate" value="0.000">
 	<input type="hidden" name="shipping" value="0.00">
 	<input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHosted">
-	<input type="hidden" name="notify_url" value="https://www.siiink.com/payments/ipn">
+	<input type="hidden" name="notify_url" value="{{ config.webRoot }}/payments/ipn">
 	<input type="hidden" name="page_style" value="tapiriik">
 	<input type="hidden" name="custom" value="{{ user|dict_get:'_id' }}">
 	<button type="submit" name="submit">On to PayPal!</button>

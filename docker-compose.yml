@@ -4,6 +4,7 @@ services:
     build: .
     environment:
       - DEBUG=True
+      - ALLOWED_HOSTS=localhost
       - RABBITMQ_BROKER_URL=amqp://guest@tapiriik_rabbitmq//
       - MONGO_HOST=mongodb://root:example@tapiriik_mongo:27017/admin
       - REDIS_HOST=tapiriik_redis
