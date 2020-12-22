@@ -265,8 +265,8 @@ DIAG_AUTH_TOTP_SECRET = DIAG_AUTH_PASSWORD = None
 
 SPORTTRACKS_OPENFIT_ENDPOINT = "https://api.sporttracks.mobi/api/v2"
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = './sent_emails'
+# EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+# EMAIL_FILE_PATH = './sent_emails'
 
 WORKER_INDEX = int(os.environ.get("TAPIRIIK_WORKER_INDEX", 0))
 
