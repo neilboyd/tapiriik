@@ -87,6 +87,8 @@ function SyncSettingsController($scope, $http, $window){
       var date = new Date($scope.tapiriik.User.Config.sync_skip_before);
       var month_abbrs = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       $scope.sync_skip_before_entry = date.getDate() + " " + month_abbrs[date.getMonth()] + " " + date.getFullYear();
+    } else {
+        $scope.sync_skip_before_entry = new Date();
     }
   });
   $scope.sync_suppress_options = [{k: true, v: "manually"}, {k: false, v: "automatically"}];
@@ -99,7 +101,7 @@ function SyncSettingsController($scope, $http, $window){
     if ($scope.sync_skip_before_entry) {
       $scope.tapiriik.User.Config.sync_skip_before = new Date($scope.sync_skip_before_entry);
     } else {
-      $scope.tapiriik.User.Config.sync_skip_before = null;
+      $scope.tapiriik.User.Config.sync_skip_before = new Date();
     }
     $http.post("/account/configure", $scope.tapiriik.User.Config).success(function(){
       $.address.value(""); // Back to jquery land
