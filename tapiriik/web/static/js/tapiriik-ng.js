@@ -98,8 +98,6 @@ function SyncSettingsController($scope, $http, $window){
     }
     if ($scope.sync_skip_before_entry) {
       $scope.tapiriik.User.Config.sync_skip_before = new Date($scope.sync_skip_before_entry);
-    } else {
-      $scope.tapiriik.User.Config.sync_skip_before = new Date();
     }
     $http.post("/account/configure", $scope.tapiriik.User.Config).success(function(){
       $.address.value(""); // Back to jquery land
