@@ -157,17 +157,14 @@ class StravaService(ServiceBase):
     def DownloadActivityList(self, svcRecord, exhaustive=False):
         activities = []
         exclusions = []
-        before = earliestDate = None
+        page = 0
 
         while True:
-            if before is not None and before < 0:
-                break # Caused by activities that "happened" before the epoch. We generally don't care about those activities...
-            logger.debug("Req with before=" + str(before) + "/" + str(earliestDate))
-            resp = self._requestWithAuth(lambda session: session.get("https://www.strava.com/api/v3/athletes/" + str(svcRecord.ExternalID) + "/activities", params={"before": before}), svcRecord)
+            page += 1
+            logger.debug("Req page %d" % page)
+            resp = self._requestWithAuth(lambda session: session.get("https://www.strava.com/api/v3/athletes/" + str(svcRecord.ExternalID) + "/activities", params={"page": page}), svcRecord)
             if resp.status_code == 401:
                 raise APIException("No authorization to retrieve activity list", block=True, user_exception=UserException(UserExceptionType.Authorization, intervention_required=True))
-
-            earliestDate = None
 
             try:
                 reqdata = resp.json()
@@ -182,9 +179,6 @@ class StravaService(ServiceBase):
                 activity.TZ = pytz.timezone(re.sub("^\([^\)]+\)\s*", "", ride["timezone"]))  # Comes back as "(GMT -13:37) The Stuff/We Want""
                 activity.StartTime = pytz.utc.localize(datetime.strptime(ride["start_date"], "%Y-%m-%dT%H:%M:%SZ"))
                 logger.debug("\tActivity s/t %s: %s" % (activity.StartTime, ride["name"]))
-                if not earliestDate or activity.StartTime < earliestDate:
-                    earliestDate = activity.StartTime
-                    before = calendar.timegm(activity.StartTime.astimezone(pytz.utc).timetuple())
 
                 activity.EndTime = activity.StartTime + timedelta(0, ride["elapsed_time"])
                 activity.ServiceData = {"ActivityID": ride["id"], "Manual": ride["manual"]}
@@ -220,7 +214,7 @@ class StravaService(ServiceBase):
                 activity.CalculateUID()
                 activities.append(activity)
 
-            if not exhaustive or not earliestDate:
+            if not exhaustive:
                 break
 
         return activities, exclusions
