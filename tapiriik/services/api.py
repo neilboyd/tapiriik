@@ -23,6 +23,9 @@ class ServiceWarning(ServiceException):
 class APIException(ServiceException):
     pass
 
+class APIAuthorizationException(APIException):
+    pass
+
 class APIWarning(ServiceWarning):
     pass
 

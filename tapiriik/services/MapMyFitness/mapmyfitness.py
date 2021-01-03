@@ -1,4 +1,4 @@
-from tapiriik.services.service_authentication import ServiceAuthenticationType
+from tapiriik.services.service_base import ServiceAuthenticationType, ServiceBase
 from tapiriik.services.api import APIException, APIAuthorizationException
 from tapiriik.services.interchange import UploadedActivity, ActivityType, WaypointType, Waypoint, Location
 from tapiriik.settings import WEB_ROOT, MAPMYFITNESS_CLIENT_KEY, MAPMYFITNESS_CLIENT_SECRET
@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from requests_oauthlib import OAuth1
 
 
-class MapMyFitnessService():
+class MapMyFitnessService(ServiceBase):
     ID = "mapmyfitness"
     DisplayName = "MapMyFitness"
     AuthenticationType = ServiceAuthenticationType.OAuthSigned
