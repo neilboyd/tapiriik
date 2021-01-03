@@ -121,6 +121,11 @@ body {
 	height:475px;
 }
 
+.popover iframe#mapmyfitness {
+	width:400px;
+	height:680px;
+}
+
 .logo {
 	width:100%;
 	position:absolute;
