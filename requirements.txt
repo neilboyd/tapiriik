@@ -1,5 +1,4 @@
 requests
-requests-oauthlib
 dnspython
 pymongo==3.10.1
 pytz
