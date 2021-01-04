@@ -36,13 +36,13 @@ class MapMyFitnessService(ServiceBase):
 
     def GenerateUserAuthorizationURL(self, session, level=None):
         oauth = OAuth1(MAPMYFITNESS_CLIENT_KEY, client_secret=MAPMYFITNESS_CLIENT_SECRET)
-        response = requests.post("http://api.mapmyfitness.com/3.1/oauth/request_token", auth=oauth)
+        response = requests.post("https://api.mapmyfitness.com/v7.1/oauth2/request_token", auth=oauth)
         from urllib.parse import parse_qs, urlencode
         credentials = parse_qs(response.text)
         token = credentials["oauth_token"][0]
         self.OutstandingOAuthRequestTokens[token] = credentials["oauth_token_secret"][0]
         reqObj = {"oauth_token": token, "oauth_callback": WEB_ROOT + reverse("oauth_return", kwargs={"service": "mapmyfitness"})}
-        return "http://api.mapmyfitness.com/3.1/oauth/authorize?" + urlencode(reqObj)
+        return "https://api.mapmyfitness.com/v7.1/oauth2/authorize?" + urlencode(reqObj)
 
     def _getOauthClient(self, svcRec):
         return OAuth1(MAPMYFITNESS_CLIENT_KEY,
@@ -52,7 +52,7 @@ class MapMyFitnessService(ServiceBase):
 
     def _getUserId(self, svcRec):
         oauth = self._getOauthClient(svcRec)
-        response = requests.get("http://api.mapmyfitness.com/3.1/users/get_user", auth=oauth)
+        response = requests.get("https://api.mapmyfitness.com/v7.1/users/get_user", auth=oauth)
         responseData = response.json()
         return responseData["result"]["output"]["user"]["user_id"]
 
@@ -66,7 +66,7 @@ class MapMyFitnessService(ServiceBase):
                        resource_owner_key=token,
                        resource_owner_secret=self.OutstandingOAuthRequestTokens[token])
 
-        response = requests.post("http://api.mapmyfitness.com/3.1/oauth/access_token", auth=oauth)
+        response = requests.post("https://api.mapmyfitness.com/v7.1/oauth2/access_token", auth=oauth)
         if response.status_code != 200:
             raise APIAuthorizationException("Invalid code", None)
 
@@ -89,14 +89,14 @@ class MapMyFitnessService(ServiceBase):
 
     def RevokeAuthorization(self, serviceRecord):
         oauth = self._getOauthClient(serviceRecord)
-        resp = requests.post("http://api.mapmyfitness.com/3.1/oauth/revoke", auth=oauth)
+        resp = requests.post("https://api.mapmyfitness.com/v7.1/oauth2/revoke", auth=oauth)
         if resp.status_code != 200:
             raise APIException("Unable to deauthorize MMF auth token, status " + str(resp.status_code) + " resp " + resp.text, serviceRecord)
 
     def _getActivityTypeHierarchy(self):
         if hasattr(self, "_activityTypes"):
             return self._activityTypes
-        response = requests.get("http://api.mapmyfitness.com/3.1/workouts/get_activity_types")
+        response = requests.get("https://api.mapmyfitness.com/v7.1/workouts/get_activity_types")
         data = response.json()
         self._activityTypes = {}
         for actType in data["result"]["output"]["activity_types"]:
@@ -120,7 +120,7 @@ class MapMyFitnessService(ServiceBase):
         offset = 0
 
         while True:
-            response = requests.get("http://api.mapmyfitness.com/3.1/workouts/get_workouts?limit=25&start_record=" + str(offset), auth=oauth)
+            response = requests.get("https://api.mapmyfitness.com/v7.1/workouts/get_workouts?limit=25&start_record=" + str(offset), auth=oauth)
             if response.status_code != 200:
                 if response.status_code == 401 or response.status_code == 403:
                     raise APIAuthorizationException("No authorization to retrieve activity list", serviceRecord)
@@ -149,5 +149,5 @@ class MapMyFitnessService(ServiceBase):
         activityID = [x["ActivityID"] for x in activity.UploadedTo if x["Connection"] == serviceRecord][0]
         print (activityID)# route id 175411456 key 2025466620
         oauth = self._getOauthClient(serviceRecord)
-        response = requests.get("http://api.mapmyfitness.com/3.1/routes/get_routes", auth=oauth)
+        response = requests.get("https://api.mapmyfitness.com/v7.1/routes/get_routes", auth=oauth)
         print (response.text)
