@@ -1,4 +1,5 @@
 from tapiriik.services.service_base import ServiceAuthenticationType, ServiceBase
+from tapiriik.services.service_record import ServiceRecord
 from tapiriik.services.api import APIException, APIAuthorizationException
 from tapiriik.services.interchange import UploadedActivity, ActivityType, WaypointType, Waypoint, Location
 from tapiriik.settings import WEB_ROOT, MAPMYFITNESS_CLIENT_KEY, MAPMYFITNESS_CLIENT_SECRET
@@ -55,17 +56,14 @@ class MapMyFitnessService(ServiceBase):
         reqObj = {"oauth_token": token, "oauth_callback": WEB_ROOT + reverse("oauth_return", kwargs={"service": "mapmyfitness"})}
         return "https://api.mapmyfitness.com/v7.1/oauth2/authorize?" + urlencode(reqObj)
 
-    def _getOauthClient(self, svcRec):
-        logger.debug("_getOauthClient")
-        return OAuth1(MAPMYFITNESS_CLIENT_KEY,
-                       client_secret=MAPMYFITNESS_CLIENT_SECRET,
-                       resource_owner_key=svcRec["Authorization"]["Key"],
-                       resource_owner_secret=svcRec["Authorization"]["Secret"])
+    def _apiHeaders(self, serviceRecord):
+        logger.debug("_apiHeaders")
+        return {"Authorization": "Bearer " + serviceRecord.Authorization["Token"],
+                "Accept-Charset": "UTF-8"}
 
-    def _getUserId(self, svcRec):
+    def _getUserId(self, serviceRecord):
         logger.debug("_getUserId")
-        oauth = self._getOauthClient(svcRec)
-        response = requests.get("https://api.mapmyfitness.com/v7.1/users/get_user", auth=oauth)
+        response = requests.get("https://api.mapmyfitness.com/v7.1/users/get_user", headers=self._apiHeaders(serviceRecord))
         responseData = response.json()
         return responseData["result"]["output"]["user"]["user_id"]
 
@@ -73,33 +71,25 @@ class MapMyFitnessService(ServiceBase):
         logger.debug("RetrieveAuthorizationToken")
         from tapiriik.services import Service
 
-        token = req.GET.get("oauth_token")
+        code = req.GET.get("code")
+        params = {"grant_type": "authorization_code",
+                  "code": code,
+                  "client_id": MAPMYFITNESS_CLIENT_KEY,
+                  "client_secret": MAPMYFITNESS_CLIENT_SECRET,
+                  "redirect_uri": WEB_ROOT + reverse("oauth_return", kwargs={"service": "mapmyfitness"})}
 
-        oauth = OAuth1(MAPMYFITNESS_CLIENT_KEY,
-                       client_secret=MAPMYFITNESS_CLIENT_SECRET,
-                       resource_owner_key=token,
-                       resource_owner_secret=self.OutstandingOAuthRequestTokens[token])
+        response = requests.post("https://api.mapmyfitness.com/v7.1/oauth2/access_token",
+                                 data=urlencode(params),
+                                 headers={"Content-Type": "application/x-www-form-urlencoded",
+                                          "api-key": MAPMYFITNESS_CLIENT_KEY})
 
-        response = requests.post("https://api.mapmyfitness.com/v7.1/oauth2/access_token", auth=oauth)
         if response.status_code != 200:
-            raise APIAuthorizationException("Invalid code", None)
+            raise APIException("Invalid code")
+        token = response.json()["access_token"]
 
-        del self.OutstandingOAuthRequestTokens[token]
+        uid = self._getUserId(ServiceRecord({"Authorization": {"Token": token}}))
 
-        from urllib.parse import parse_qs
-
-        responseData = parse_qs(response.text)
-
-        token = responseData["oauth_token"][0]
-        secret = responseData["oauth_token_secret"][0]
-
-        # hacky, but also totally their fault for not giving the user id in the token req
-        existingRecord = Service.GetServiceRecordWithAuthDetails(self, {"Key": token})
-        if existingRecord is None:
-            uid = self._getUserId({"Authorization": {"Key": token, "Secret": secret}})  # meh
-        else:
-            uid = existingRecord["ExternalID"]
-        return (uid, {"Key": token, "Secret": secret})
+        return (uid, {"Token": token})
 
     def RevokeAuthorization(self, serviceRecord):
         logger.debug("RevokeAuthorization")
