@@ -18,6 +18,7 @@ class MapMyFitnessService(ServiceBase):
     DisplayName = "MapMyFitness"
     AuthenticationType = ServiceAuthenticationType.OAuth
     UserAuthorizationURL = None
+    AuthenticationNoFrame = True
     OutstandingOAuthRequestTokens = {}
 
     _activityMappings = {16: ActivityType.Running,
@@ -37,9 +38,10 @@ class MapMyFitnessService(ServiceBase):
 
     def WebInit(self):
         logger.debug("WebInit")
+        redirect_uri = WEB_ROOT + reverse("oauth_return", kwargs={"service": "mapmyfitness"})
         params = {'client_id': MAPMYFITNESS_CLIENT_KEY,
                   'response_type': 'code',
-                  'redirect_uri': WEB_ROOT + reverse("oauth_return", kwargs={"service": "mapmyfitness"})}
+                  'redirect_uri': redirect_uri}
         self.UserAuthorizationURL = \
             "https://api.mapmyfitness.com/v7.1/oauth2/authorize/?" + urlencode(params)
 
