@@ -8,6 +8,9 @@ import requests
 from django.core.urlresolvers import reverse
 from requests_oauthlib import OAuth1
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 class MapMyFitnessService(ServiceBase):
     ID = "mapmyfitness"
@@ -32,6 +35,7 @@ class MapMyFitnessService(ServiceBase):
     SupportedActivities = list(_activityMappings.values())
 
     def WebInit(self):
+        logger.debug("WebInit")
         params = {'client_id': MAPMYFITNESS_CLIENT_KEY,
                   'response_type': 'code',
                   'redirect_uri': WEB_ROOT + reverse("oauth_return", kwargs={"service": "mapmyfitness"})}
@@ -39,6 +43,7 @@ class MapMyFitnessService(ServiceBase):
             "https://api.mapmyfitness.com/v7.1/oauth2/authorize/?" + urlencode(params)
 
     def GenerateUserAuthorizationURL(self, session, level=None):
+        logger.debug("GenerateUserAuthorizationURL")
         oauth = OAuth1(MAPMYFITNESS_CLIENT_KEY, client_secret=MAPMYFITNESS_CLIENT_SECRET)
         response = requests.post("https://api.mapmyfitness.com/v7.1/oauth2/request_token", auth=oauth)
         from urllib.parse import parse_qs, urlencode
@@ -49,18 +54,21 @@ class MapMyFitnessService(ServiceBase):
         return "https://api.mapmyfitness.com/v7.1/oauth2/authorize?" + urlencode(reqObj)
 
     def _getOauthClient(self, svcRec):
+        logger.debug("_getOauthClient")
         return OAuth1(MAPMYFITNESS_CLIENT_KEY,
                        client_secret=MAPMYFITNESS_CLIENT_SECRET,
                        resource_owner_key=svcRec["Authorization"]["Key"],
                        resource_owner_secret=svcRec["Authorization"]["Secret"])
 
     def _getUserId(self, svcRec):
+        logger.debug("_getUserId")
         oauth = self._getOauthClient(svcRec)
         response = requests.get("https://api.mapmyfitness.com/v7.1/users/get_user", auth=oauth)
         responseData = response.json()
         return responseData["result"]["output"]["user"]["user_id"]
 
     def RetrieveAuthorizationToken(self, req, level):
+        logger.debug("RetrieveAuthorizationToken")
         from tapiriik.services import Service
 
         token = req.GET.get("oauth_token")
@@ -92,12 +100,14 @@ class MapMyFitnessService(ServiceBase):
         return (uid, {"Key": token, "Secret": secret})
 
     def RevokeAuthorization(self, serviceRecord):
+        logger.debug("RevokeAuthorization")
         oauth = self._getOauthClient(serviceRecord)
         resp = requests.post("https://api.mapmyfitness.com/v7.1/oauth2/revoke", auth=oauth)
         if resp.status_code != 200:
             raise APIException("Unable to deauthorize MMF auth token, status " + str(resp.status_code) + " resp " + resp.text, serviceRecord)
 
     def _getActivityTypeHierarchy(self):
+        logger.debug("_getActivityTypeHierarchy")
         if hasattr(self, "_activityTypes"):
             return self._activityTypes
         response = requests.get("https://api.mapmyfitness.com/v7.1/workouts/get_activity_types")
@@ -108,6 +118,7 @@ class MapMyFitnessService(ServiceBase):
         return self._activityTypes
 
     def _resolveActivityType(self, actType):
+        logger.debug("_resolveActivityType")
         self._getActivityTypeHierarchy()
         while actType not in self._activityMappings or self._activityTypes[actType]["parent_activity_type_id"] is not None:
             actType = int(self._activityTypes[actType]["parent_activity_type_id"])
@@ -117,6 +128,7 @@ class MapMyFitnessService(ServiceBase):
             return ActivityType.Other
 
     def DownloadActivityList(self, serviceRecord, exhaustive=False):
+        logger.debug("DownloadActivityList")
         oauth = self._getOauthClient(serviceRecord)
 
         allItems = []
@@ -150,6 +162,7 @@ class MapMyFitnessService(ServiceBase):
         return activities
 
     def DownloadActivity(self, serviceRecord, activity):
+        logger.debug("DownloadActivity")
         activityID = [x["ActivityID"] for x in activity.UploadedTo if x["Connection"] == serviceRecord][0]
         print (activityID)# route id 175411456 key 2025466620
         oauth = self._getOauthClient(serviceRecord)
