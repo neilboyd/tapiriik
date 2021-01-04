@@ -34,7 +34,7 @@ class MapMyFitnessService(ServiceBase):
     def WebInit(self):
         pass
 
-    def GenerateUserAuthorizationURL(self):
+    def GenerateUserAuthorizationURL(self, session, level=None):
         oauth = OAuth1(MAPMYFITNESS_CLIENT_KEY, client_secret=MAPMYFITNESS_CLIENT_SECRET)
         response = requests.post("http://api.mapmyfitness.com/3.1/oauth/request_token", auth=oauth)
         from urllib.parse import parse_qs, urlencode
