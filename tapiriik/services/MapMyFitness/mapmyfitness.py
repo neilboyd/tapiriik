@@ -4,6 +4,7 @@ from tapiriik.services.interchange import UploadedActivity, ActivityType, Waypoi
 from tapiriik.settings import WEB_ROOT, MAPMYFITNESS_CLIENT_KEY, MAPMYFITNESS_CLIENT_SECRET
 
 from datetime import datetime, timedelta
+from urllib.parse import parse_qs, urlencode
 import requests
 from django.core.urlresolvers import reverse
 from requests_oauthlib import OAuth1
@@ -46,7 +47,6 @@ class MapMyFitnessService(ServiceBase):
         logger.debug("GenerateUserAuthorizationURL")
         oauth = OAuth1(MAPMYFITNESS_CLIENT_KEY, client_secret=MAPMYFITNESS_CLIENT_SECRET)
         response = requests.post("https://api.mapmyfitness.com/v7.1/oauth2/request_token", auth=oauth)
-        from urllib.parse import parse_qs, urlencode
         credentials = parse_qs(response.text)
         token = credentials["oauth_token"][0]
         self.OutstandingOAuthRequestTokens[token] = credentials["oauth_token_secret"][0]
