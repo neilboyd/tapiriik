@@ -12,7 +12,7 @@ from requests_oauthlib import OAuth1
 class MapMyFitnessService(ServiceBase):
     ID = "mapmyfitness"
     DisplayName = "MapMyFitness"
-    AuthenticationType = ServiceAuthenticationType.OAuthSigned
+    AuthenticationType = ServiceAuthenticationType.OAuth
     UserAuthorizationURL = None
     OutstandingOAuthRequestTokens = {}
 
@@ -32,7 +32,7 @@ class MapMyFitnessService(ServiceBase):
     SupportedActivities = list(_activityMappings.values())
 
     def WebInit(self):
-        pass
+        self.UserAuthorizationURL = reverse("oauth_return", kwargs={"service": "mapmyfitness"})
 
     def GenerateUserAuthorizationURL(self, session, level=None):
         oauth = OAuth1(MAPMYFITNESS_CLIENT_KEY, client_secret=MAPMYFITNESS_CLIENT_SECRET)
@@ -56,7 +56,7 @@ class MapMyFitnessService(ServiceBase):
         responseData = response.json()
         return responseData["result"]["output"]["user"]["user_id"]
 
-    def RetrieveAuthorizationToken(self, req):
+    def RetrieveAuthorizationToken(self, req, level):
         from tapiriik.services import Service
 
         token = req.GET.get("oauth_token")

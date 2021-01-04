@@ -204,8 +204,6 @@ tapiriik.OpenAuthDialog = function(svcId){
 		} else {
 			contents = $("<iframe>").attr("src",tapiriik.ServiceInfo[svcId].AuthorizationURL).attr("id",svcId);
 		}
-	} else if (mode == "oauth-signed"){
-		contents = $("<iframe>").attr("src","/auth/redirect/"+svcId).attr("id",svcId);
 	} else if (mode == "direct") {
 		contents = tapiriik.CreateDirectLoginForm(svcId);
 	}

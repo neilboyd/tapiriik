@@ -3,7 +3,6 @@ from tapiriik.services.api import ServiceException, UserExceptionType, UserExcep
 
 class ServiceAuthenticationType:
     OAuth = "oauth"
-    OAuthSigned = "oauth-signed"
     UsernamePassword = "direct"
 
 class InvalidServiceOperationException(Exception):
