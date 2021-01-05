@@ -119,14 +119,10 @@ class MapMyFitnessService(ServiceBase):
 
     def DownloadActivityList(self, serviceRecord, exhaustive=False):
         logger.debug("DownloadActivityList")
-        oauth = self._getOauthClient(serviceRecord)
-
         allItems = []
-
         offset = 0
-
         while True:
-            response = requests.get("https://api.mapmyfitness.com/v7.1/workouts/get_workouts?limit=25&start_record=" + str(offset), auth=oauth)
+            response = requests.get("https://api.mapmyfitness.com/v7.1/workouts/get_workouts?limit=25&start_record=" + str(offset), headers=self._apiHeaders(serviceRecord))
             if response.status_code != 200:
                 if response.status_code == 401 or response.status_code == 403:
                     raise APIAuthorizationException("No authorization to retrieve activity list", serviceRecord)
@@ -154,9 +150,8 @@ class MapMyFitnessService(ServiceBase):
     def DownloadActivity(self, serviceRecord, activity):
         logger.debug("DownloadActivity")
         activityID = [x["ActivityID"] for x in activity.UploadedTo if x["Connection"] == serviceRecord][0]
-        print (activityID)# route id 175411456 key 2025466620
-        oauth = self._getOauthClient(serviceRecord)
-        response = requests.get("https://api.mapmyfitness.com/v7.1/routes/get_routes", auth=oauth)
+        print (activityID)
+        response = requests.get("https://api.mapmyfitness.com/v7.1/routes/get_routes", headers=self._apiHeaders(serviceRecord))
         print (response.text)
 
     def UploadActivity(self, serviceRecord, activity):
