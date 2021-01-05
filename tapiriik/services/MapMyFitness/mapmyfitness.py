@@ -122,14 +122,16 @@ class MapMyFitnessService(ServiceBase):
         allItems = []
         offset = 0
         while True:
-            response = requests.get("https://api.mapmyfitness.com/v7.1/workouts/get_workouts?limit=25&start_record=" + str(offset), headers=self._apiHeaders(serviceRecord))
+            response = requests.get("https://api.mapmyfitness.com/v7.1/workout?limit=25&offset=" + str(offset), headers=self._apiHeaders(serviceRecord))
             if response.status_code != 200:
                 if response.status_code == 401 or response.status_code == 403:
                     raise APIAuthorizationException("No authorization to retrieve activity list", serviceRecord)
                 raise APIException("Unable to retrieve activity list " + str(response), serviceRecord)
             data = response.json()
             print(data)
+            # TODO should be ["_embedded"]["workouts"]
             allItems += data["result"]["output"]["workouts"]
+            # TODO should be ["total_count"]
             if not exhaustive or int(data["result"]["output"]["count"]) < 25:
                 break
 
