@@ -93,11 +93,8 @@ class MapMyFitnessService(ServiceBase):
         return (uid, {"Token": token})
 
     def RevokeAuthorization(self, serviceRecord):
-        logger.debug("RevokeAuthorization")
-        oauth = self._getOauthClient(serviceRecord)
-        resp = requests.post("https://api.mapmyfitness.com/v7.1/oauth2/revoke", auth=oauth)
-        if resp.status_code != 200:
-            raise APIException("Unable to deauthorize MMF auth token, status " + str(resp.status_code) + " resp " + resp.text, serviceRecord)
+        # there doesn't seem to be a way to revoke the token
+        pass
 
     def _getActivityTypeHierarchy(self):
         logger.debug("_getActivityTypeHierarchy")
@@ -161,3 +158,13 @@ class MapMyFitnessService(ServiceBase):
         oauth = self._getOauthClient(serviceRecord)
         response = requests.get("https://api.mapmyfitness.com/v7.1/routes/get_routes", auth=oauth)
         print (response.text)
+
+    def UploadActivity(self, serviceRecord, activity):
+        # TODO
+        pass
+
+    def DeleteCachedData(self, serviceRecord):
+        pass
+
+    def DeleteActivity(self, serviceRecord, uploadId):
+        pass
