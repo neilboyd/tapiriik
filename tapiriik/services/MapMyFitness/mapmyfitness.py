@@ -63,9 +63,10 @@ class MapMyFitnessService(ServiceBase):
 
     def _getUserId(self, serviceRecord):
         logger.debug("_getUserId")
-        response = requests.get("https://api.mapmyfitness.com/v7.1/users/get_user", headers=self._apiHeaders(serviceRecord))
+        response = requests.get("https://api.mapmyfitness.com/v7.1/user/self", headers=self._apiHeaders(serviceRecord))
+        logger.debug("_getUserId response=%s" % response)
         responseData = response.json()
-        return responseData["result"]["output"]["user"]["user_id"]
+        return responseData["id"]
 
     def RetrieveAuthorizationToken(self, req, level):
         logger.debug("RetrieveAuthorizationToken")
