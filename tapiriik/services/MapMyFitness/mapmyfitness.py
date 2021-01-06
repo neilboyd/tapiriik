@@ -1,6 +1,6 @@
 from tapiriik.services.service_base import ServiceAuthenticationType, ServiceBase
 from tapiriik.services.service_record import ServiceRecord
-from tapiriik.services.api import APIException
+from tapiriik.services.api import APIException, UserException, UserExceptionType
 from tapiriik.services.interchange import UploadedActivity, ActivityType, WaypointType, Waypoint, Location
 from tapiriik.settings import WEB_ROOT, MAPMYFITNESS_CLIENT_KEY, MAPMYFITNESS_CLIENT_SECRET
 
@@ -121,8 +121,9 @@ class MapMyFitnessService(ServiceBase):
         logger.debug("DownloadActivityList")
         allItems = []
         offset = 0
+        next = '/v7.1/workout/?user=' + str(serviceRecord.ExternalID)
         while True:
-            response = requests.get("https://api.mapmyfitness.com/v7.1/workout?limit=25&offset=%d&user=%d" % (offset, serviceRecord.ExternalID), headers=self._apiHeaders(serviceRecord))
+            response = requests.get("https://api.mapmyfitness.com" + next, headers=self._apiHeaders(serviceRecord))
             if response.status_code != 200:
                 if response.status_code == 401 or response.status_code == 403:
                     raise APIException("No authorization to retrieve activity list", block=True, user_exception=UserException(UserExceptionType.Authorization, intervention_required=True))
@@ -130,8 +131,10 @@ class MapMyFitnessService(ServiceBase):
             data = response.json()
             print(data)
             allItems += data["_embedded"]["workouts"]
-            if not exhaustive or int(data["total_count"]) < 25:
+            next = data["_links"].get("next")
+            if not exhaustive or not next:
                 break
+            next = next[0]["href"]
 
         activities = []
         for act in allItems:
