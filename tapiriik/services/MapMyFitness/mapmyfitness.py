@@ -96,24 +96,20 @@ class MapMyFitnessService(ServiceBase):
         # there doesn't seem to be a way to revoke the token
         pass
 
-    def _getActivityTypeHierarchy(self):
+    def _getActivityTypeHierarchy(self, headers):
         logger.debug("_getActivityTypeHierarchy")
         if hasattr(self, "_activityTypes"):
             return self._activityTypes
-        # TODO update to use new api https://developer.underarmour.com/docs/v71_Activity_Type/
-        response = requests.get("https://api.mapmyfitness.com/v7.1/workouts/get_activity_types")
+        response = requests.get("https://api.mapmyfitness.com/v7.1/activity_type", headers=headers)
         data = response.json()
         self._activityTypes = {}
-        for actType in data["result"]["output"]["activity_types"]:
-            self._activityTypes[int(actType["activity_type_id"])] = actType
+        for actType in data["_embedded"]["activity_types"]:
+            self._activityTypes[int(actType["_links"]["root"][0]["id"])] = actType
         return self._activityTypes
 
-    def _resolveActivityType(self, actType):
+    def _resolveActivityType(self, actType, headers):
         logger.debug("_resolveActivityType")
-        self._getActivityTypeHierarchy()
-        # TODO update to use new api https://developer.underarmour.com/docs/v71_Activity_Type/
-        while actType not in self._activityMappings or self._activityTypes[actType]["parent_activity_type_id"] is not None:
-            actType = int(self._activityTypes[actType]["parent_activity_type_id"])
+        self._getActivityTypeHierarchy(headers)
         if actType in self._activityMappings:
             return self._activityMappings[actType]
         else:
@@ -122,9 +118,10 @@ class MapMyFitnessService(ServiceBase):
     def DownloadActivityList(self, serviceRecord, exhaustive=False):
         logger.debug("DownloadActivityList")
         allItems = []
+        headers=self._apiHeaders(serviceRecord)
         nextRequest = '/v7.1/workout/?user=' + str(serviceRecord.ExternalID)
         while True:
-            response = requests.get("https://api.mapmyfitness.com" + nextRequest, headers=self._apiHeaders(serviceRecord))
+            response = requests.get("https://api.mapmyfitness.com" + nextRequest, headers=headers)
             if response.status_code != 200:
                 if response.status_code == 401 or response.status_code == 403:
                     raise APIException("No authorization to retrieve activity list", block=True, user_exception=UserException(UserExceptionType.Authorization, intervention_required=True))
@@ -143,7 +140,7 @@ class MapMyFitnessService(ServiceBase):
             aggregates = act["aggregates"]
             activity.EndTime = activity.StartTime + timedelta(0, round(float(aggregates["elapsed_time_total"])))
             activity.Distance = aggregates["distance_total"]
-            activity.Type = self._resolveActivityType(int(act["_links"]["activity_type"][0]["id"]))
+            activity.Type = self._resolveActivityType(int(act["_links"]["activity_type"][0]["id"]), headers)
             activity.ServiceData = {"ActivityID": act["reference_key"]}
             activity.UploadedTo = [{"Connection": serviceRecord, "ActivityID": act["reference_key"]}]
             activity.CalculateUID()
