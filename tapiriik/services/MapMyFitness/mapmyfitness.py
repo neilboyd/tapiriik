@@ -100,6 +100,7 @@ class MapMyFitnessService(ServiceBase):
         logger.debug("_getActivityTypeHierarchy")
         if hasattr(self, "_activityTypes"):
             return self._activityTypes
+        # TODO update to use new api https://developer.underarmour.com/docs/v71_Activity_Type/
         response = requests.get("https://api.mapmyfitness.com/v7.1/workouts/get_activity_types")
         data = response.json()
         self._activityTypes = {}
@@ -110,6 +111,7 @@ class MapMyFitnessService(ServiceBase):
     def _resolveActivityType(self, actType):
         logger.debug("_resolveActivityType")
         self._getActivityTypeHierarchy()
+        # TODO update to use new api https://developer.underarmour.com/docs/v71_Activity_Type/
         while actType not in self._activityMappings or self._activityTypes[actType]["parent_activity_type_id"] is not None:
             actType = int(self._activityTypes[actType]["parent_activity_type_id"])
         if actType in self._activityMappings:
@@ -129,7 +131,6 @@ class MapMyFitnessService(ServiceBase):
                     raise APIException("No authorization to retrieve activity list", block=True, user_exception=UserException(UserExceptionType.Authorization, intervention_required=True))
                 raise APIException("Unable to retrieve activity list " + str(response), serviceRecord)
             data = response.json()
-            print(data)
             allItems += data["_embedded"]["workouts"]
             next = data["_links"].get("next")
             if not exhaustive or not next:
@@ -139,24 +140,22 @@ class MapMyFitnessService(ServiceBase):
         activities = []
         for act in allItems:
             activity = UploadedActivity()
-            # TODO the correct fields from new API https://developer.underarmour.com/docs/v71_Workout/
-            activity.StartTime = datetime.strptime(act["workout_date"] + " " + act["workout_start_time"], "%Y-%m-%d %H:%M:%S")
-            activity.EndTime = activity.StartTime + timedelta(0, round(float(act["time_taken"])))
-            activity.Distance = act["distance"]
-
-            activity.Type = self._resolveActivityType(int(act["activity_type_id"]))
+            activity.StartTime = datetime.strptime(act["start_datetime"], "%Y-%m-%dT%H:%M:%S%z")
+            aggregates = act["aggregates"]
+            activity.EndTime = activity.StartTime + timedelta(0, round(float(aggregates["elapsed_time_total"])))
+            activity.Distance = aggregates["distance_total"]
+            activity.Type = self._resolveActivityType(int(act["_links"]["activity_type"][0]["id"]))
+            activity.ServiceData = {"ActivityID": act["reference_key"]}
+            activity.UploadedTo = [{"Connection": serviceRecord, "ActivityID": act["reference_key"]}]
             activity.CalculateUID()
-
-            activity.UploadedTo = [{"Connection": serviceRecord, "ActivityID": act["workout_id"]}]
             activities.append(activity)
         return activities
 
     def DownloadActivity(self, serviceRecord, activity):
+        # TODO probably get rid of UploadedTo and do the same as runkeeper
         logger.debug("DownloadActivity")
         activityID = [x["ActivityID"] for x in activity.UploadedTo if x["Connection"] == serviceRecord][0]
-        print (activityID)
         response = requests.get("https://api.mapmyfitness.com/v7.1/routes/get_routes", headers=self._apiHeaders(serviceRecord))
-        print (response.text)
 
     def UploadActivity(self, serviceRecord, activity):
         # TODO
