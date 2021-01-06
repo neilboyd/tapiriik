@@ -1,6 +1,6 @@
 from tapiriik.services.service_base import ServiceAuthenticationType, ServiceBase
 from tapiriik.services.service_record import ServiceRecord
-from tapiriik.services.api import APIException, APIAuthorizationException
+from tapiriik.services.api import APIException
 from tapiriik.services.interchange import UploadedActivity, ActivityType, WaypointType, Waypoint, Location
 from tapiriik.settings import WEB_ROOT, MAPMYFITNESS_CLIENT_KEY, MAPMYFITNESS_CLIENT_SECRET
 
@@ -125,7 +125,7 @@ class MapMyFitnessService(ServiceBase):
             response = requests.get("https://api.mapmyfitness.com/v7.1/workout?limit=25&offset=%d&user=%d" % (offset, serviceRecord.ExternalID), headers=self._apiHeaders(serviceRecord))
             if response.status_code != 200:
                 if response.status_code == 401 or response.status_code == 403:
-                    raise APIAuthorizationException("No authorization to retrieve activity list", serviceRecord)
+                    raise APIException("No authorization to retrieve activity list", block=True, user_exception=UserException(UserExceptionType.Authorization, intervention_required=True))
                 raise APIException("Unable to retrieve activity list " + str(response), serviceRecord)
             data = response.json()
             print(data)
