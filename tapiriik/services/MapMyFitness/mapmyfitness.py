@@ -122,22 +122,21 @@ class MapMyFitnessService(ServiceBase):
         allItems = []
         offset = 0
         while True:
-            response = requests.get("https://api.mapmyfitness.com/v7.1/workout?limit=25&offset=" + str(offset), headers=self._apiHeaders(serviceRecord))
+            response = requests.get("https://api.mapmyfitness.com/v7.1/workout?limit=25&offset=%d&user=%d" % (offset, serviceRecord.ExternalID), headers=self._apiHeaders(serviceRecord))
             if response.status_code != 200:
                 if response.status_code == 401 or response.status_code == 403:
                     raise APIAuthorizationException("No authorization to retrieve activity list", serviceRecord)
                 raise APIException("Unable to retrieve activity list " + str(response), serviceRecord)
             data = response.json()
             print(data)
-            # TODO should be ["_embedded"]["workouts"]
-            allItems += data["result"]["output"]["workouts"]
-            # TODO should be ["total_count"]
-            if not exhaustive or int(data["result"]["output"]["count"]) < 25:
+            allItems += data["_embedded"]["workouts"]
+            if not exhaustive or int(data["total_count"]) < 25:
                 break
 
         activities = []
         for act in allItems:
             activity = UploadedActivity()
+            # TODO the correct fields from new API https://developer.underarmour.com/docs/v71_Workout/
             activity.StartTime = datetime.strptime(act["workout_date"] + " " + act["workout_start_time"], "%Y-%m-%d %H:%M:%S")
             activity.EndTime = activity.StartTime + timedelta(0, round(float(act["time_taken"])))
             activity.Distance = act["distance"]
