@@ -122,20 +122,19 @@ class MapMyFitnessService(ServiceBase):
     def DownloadActivityList(self, serviceRecord, exhaustive=False):
         logger.debug("DownloadActivityList")
         allItems = []
-        offset = 0
-        next = '/v7.1/workout/?user=' + str(serviceRecord.ExternalID)
+        nextRequest = '/v7.1/workout/?user=' + str(serviceRecord.ExternalID)
         while True:
-            response = requests.get("https://api.mapmyfitness.com" + next, headers=self._apiHeaders(serviceRecord))
+            response = requests.get("https://api.mapmyfitness.com" + nextRequest, headers=self._apiHeaders(serviceRecord))
             if response.status_code != 200:
                 if response.status_code == 401 or response.status_code == 403:
                     raise APIException("No authorization to retrieve activity list", block=True, user_exception=UserException(UserExceptionType.Authorization, intervention_required=True))
                 raise APIException("Unable to retrieve activity list " + str(response), serviceRecord)
             data = response.json()
             allItems += data["_embedded"]["workouts"]
-            next = data["_links"].get("next")
-            if not exhaustive or not next:
+            nextLink = data["_links"].get("next")
+            if not exhaustive or not nextLink:
                 break
-            next = next[0]["href"]
+            nextRequest = nextLink[0]["href"]
 
         activities = []
         for act in allItems:
