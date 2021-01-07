@@ -104,7 +104,7 @@ class MapMyFitnessService(ServiceBase):
         data = response.json()
         self._activityTypes = {}
         for actType in data["_embedded"]["activity_types"]:
-            self._activityTypes[int(actType["_links"]["root"][0]["id"])] = actType
+            self._activityTypes[actType["_links"]["root"][0]["id"]] = actType
         return self._activityTypes
 
     def _resolveActivityType(self, actType, headers):
@@ -112,8 +112,13 @@ class MapMyFitnessService(ServiceBase):
         self._getActivityTypeHierarchy(headers)
         if actType in self._activityMappings:
             return self._activityMappings[actType]
-        else:
-            return ActivityType.Other
+        activity = self._activityTypes[actType]
+        parentLink = activity["_links"].get("parent")
+        if parentLink is not None:
+            parentId = parentLink[0]["id"]
+            parent = self._activityMappings[parentId]
+            return self._resolveActivityType(parent, headers)
+        return ActivityType.Other
 
     def DownloadActivityList(self, serviceRecord, exhaustive=False):
         logger.debug("DownloadActivityList")
@@ -140,7 +145,8 @@ class MapMyFitnessService(ServiceBase):
             aggregates = act["aggregates"]
             activity.EndTime = activity.StartTime + timedelta(0, round(float(aggregates["elapsed_time_total"])))
             activity.Distance = aggregates["distance_total"]
-            activity.Type = self._resolveActivityType(int(act["_links"]["activity_type"][0]["id"]), headers)
+            activityTypeId = act["_links"]["activity_type"][0]["id"]
+            activity.Type = self._resolveActivityType(activityTypeId, headers)
             activity.ServiceData = {"ActivityID": act["reference_key"]}
             activity.UploadedTo = [{"Connection": serviceRecord, "ActivityID": act["reference_key"]}]
             activity.CalculateUID()
