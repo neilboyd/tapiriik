@@ -141,6 +141,7 @@ class MapMyFitnessService(ServiceBase):
         activities = []
         exclusions = []
         for act in allItems:
+            # TODO catch exception add add to exclusions
             activity = UploadedActivity()
             activity.StartTime = datetime.strptime(act["start_datetime"], "%Y-%m-%dT%H:%M:%S%z")
             aggregates = act["aggregates"]
@@ -148,17 +149,23 @@ class MapMyFitnessService(ServiceBase):
             activity.Distance = aggregates["distance_total"]
             activityTypeId = act["_links"]["activity_type"][0]["id"]
             activity.Type = self._resolveActivityType(activityTypeId, headers)
-            activity.ServiceData = {"ActivityID": act["reference_key"], "activity_type": activityTypeId}
-            activity.UploadedTo = [{"Connection": serviceRecord, "ActivityID": act["reference_key"]}]
+            activityID = act["_links"]["self"]["id"]
+            activity.ServiceData = {"ActivityID": activityID, "reference_key": act["reference_key"], "activity_type": activityTypeId}
+            activity.UploadedTo = [{"Connection": serviceRecord, "ActivityID": activityID, "reference_key": act["reference_key"], "activity_type": activityTypeId}]
             activity.CalculateUID()
             activities.append(activity)
         return activities, exclusions
 
     def DownloadActivity(self, serviceRecord, activity):
-        # TODO probably get rid of UploadedTo and do the same as runkeeper
+        # TODO get rid of UploadedTo and do the same as runkeeper
         logger.debug("DownloadActivity")
         activityID = [x["ActivityID"] for x in activity.UploadedTo if x["Connection"] == serviceRecord][0]
-        response = requests.get("https://api.mapmyfitness.com/v7.1/routes/get_routes", headers=self._apiHeaders(serviceRecord))
+        response = requests.get("https://api.mapmyfitness.com/v7.1/workout/" + activityID, headers=self._apiHeaders(serviceRecord))
+
+        activity.Notes = response["notes"] if "notes" in response else None
+        activity.Private = response["_links"]["privacy"]["id"] == "1"
+
+        # TODO do something
 
         return activity
 
