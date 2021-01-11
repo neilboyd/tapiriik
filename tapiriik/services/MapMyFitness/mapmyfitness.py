@@ -139,6 +139,7 @@ class MapMyFitnessService(ServiceBase):
             nextRequest = nextLink[0]["href"]
 
         activities = []
+        exclusions = []
         for act in allItems:
             activity = UploadedActivity()
             activity.StartTime = datetime.strptime(act["start_datetime"], "%Y-%m-%dT%H:%M:%S%z")
@@ -151,13 +152,15 @@ class MapMyFitnessService(ServiceBase):
             activity.UploadedTo = [{"Connection": serviceRecord, "ActivityID": act["reference_key"]}]
             activity.CalculateUID()
             activities.append(activity)
-        return activities
+        return activities, exclusions
 
     def DownloadActivity(self, serviceRecord, activity):
         # TODO probably get rid of UploadedTo and do the same as runkeeper
         logger.debug("DownloadActivity")
         activityID = [x["ActivityID"] for x in activity.UploadedTo if x["Connection"] == serviceRecord][0]
         response = requests.get("https://api.mapmyfitness.com/v7.1/routes/get_routes", headers=self._apiHeaders(serviceRecord))
+
+        return activity
 
     def UploadActivity(self, serviceRecord, activity):
         # TODO
