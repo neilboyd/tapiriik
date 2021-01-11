@@ -22,19 +22,19 @@ class MapMyFitnessService(ServiceBase):
     AuthenticationNoFrame = True
     OutstandingOAuthRequestTokens = {}
 
-    _activityMappings = {16: ActivityType.Running,
-                         11: ActivityType.Cycling,
-                         41: ActivityType.MountainBiking,
-                         9: ActivityType.Walking,
-                         24: ActivityType.Hiking,
-                         398: ActivityType.DownhillSkiing,
-                         397: ActivityType.CrossCountrySkiing,  # actually "backcountry" :S
-                         107: ActivityType.Snowboarding,
-                         86: ActivityType.Skating,  # ice skating
-                         15: ActivityType.Swimming,
-                         57: ActivityType.Rowing,  # canoe/rowing
-                         211: ActivityType.Elliptical,
-                         21: ActivityType.Other}
+    _activityMappings = {"16": ActivityType.Running,
+                         "11": ActivityType.Cycling,
+                         "41": ActivityType.MountainBiking,
+                         "9": ActivityType.Walking,
+                         "24": ActivityType.Hiking,
+                         "398": ActivityType.DownhillSkiing,
+                         "397": ActivityType.CrossCountrySkiing,  # actually "backcountry" :S
+                         "107": ActivityType.Snowboarding,
+                         "86": ActivityType.Skating,  # ice skating
+                         "15": ActivityType.Swimming,
+                         "57": ActivityType.Rowing,  # canoe/rowing
+                         "211": ActivityType.Elliptical,
+                         "21": ActivityType.Other}
     SupportedActivities = list(_activityMappings.values())
 
     def WebInit(self):
@@ -104,7 +104,7 @@ class MapMyFitnessService(ServiceBase):
         data = response.json()
         self._activityTypes = {}
         for actType in data["_embedded"]["activity_types"]:
-            self._activityTypes[actType["_links"]["root"][0]["id"]] = actType
+            self._activityTypes[actType["_links"]["self"][0]["id"]] = actType
         return self._activityTypes
 
     def _resolveActivityType(self, actType, headers):
@@ -116,7 +116,7 @@ class MapMyFitnessService(ServiceBase):
         parentLink = activity["_links"].get("parent")
         if parentLink is not None:
             parentId = parentLink[0]["id"]
-            parent = self._activityMappings[parentId]
+            return self._resolveActivityType(parentId, headers)
             return self._resolveActivityType(parent, headers)
         return ActivityType.Other
 
@@ -147,7 +147,7 @@ class MapMyFitnessService(ServiceBase):
             activity.Distance = aggregates["distance_total"]
             activityTypeId = act["_links"]["activity_type"][0]["id"]
             activity.Type = self._resolveActivityType(activityTypeId, headers)
-            activity.ServiceData = {"ActivityID": act["reference_key"]}
+            activity.ServiceData = {"ActivityID": act["reference_key"], "activity_type": activityTypeId}
             activity.UploadedTo = [{"Connection": serviceRecord, "ActivityID": act["reference_key"]}]
             activity.CalculateUID()
             activities.append(activity)
