@@ -184,7 +184,7 @@ class MapMyFitnessService(ServiceBase):
         lap.Waypoints = []
 
         if serviceRecord.routeID is not None:
-            response = requests.get("https://api.mapmyfitness.com/v7.1/route/" + activityID, headers=self._apiHeaders(serviceRecord))
+            response = requests.get("https://api.mapmyfitness.com/v7.1/route/" + activityID + "/?field_set=detailed", headers=self._apiHeaders(serviceRecord))
             # TODO add waypoints to laps
 
         return activity
