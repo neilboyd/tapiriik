@@ -171,7 +171,6 @@ class MapMyFitnessService(ServiceBase):
         return activities, exclusions
 
     def DownloadActivity(self, serviceRecord, activity):
-        # I shouldn't need to get the workout at all - I think I just need the route here - if activity.ServiceData.routeID is not None
         logger.debug("DownloadActivity")
         activityID = activity.ServiceData["ActivityID"]
 
@@ -183,7 +182,7 @@ class MapMyFitnessService(ServiceBase):
         data = response.json()
 
         # add waypoints to laps
-        if "time_series" in data:
+        if "time_series" in data and "position" in data["time_series"]:
             for pt in data["time_series"]["position"]:
                 timestamp = pt[0]
                 wp = Waypoint(activity.StartTime + timedelta(seconds=timestamp))
