@@ -1,7 +1,7 @@
 from tapiriik.services.service_base import ServiceAuthenticationType, ServiceBase
 from tapiriik.services.service_record import ServiceRecord
 from tapiriik.services.api import APIException, UserException, UserExceptionType
-from tapiriik.services.interchange import UploadedActivity, ActivityType, WaypointType, Waypoint, Location
+from tapiriik.services.interchange import UploadedActivity, ActivityType, WaypointType, Waypoint, Location, Lap
 from tapiriik.settings import WEB_ROOT, MAPMYFITNESS_CLIENT_KEY, MAPMYFITNESS_CLIENT_SECRET
 
 from datetime import datetime, timedelta
@@ -152,13 +152,13 @@ class MapMyFitnessService(ServiceBase):
             activity.Distance = aggregates["distance_total"]
             # TODO get more properties - see endomondo and strava
 
-            activityTypeLink = act["_links"]["activity_type"]
+            activityTypeLink = act["_links"].get("activity_type")
             activityTypeID = activityTypeLink[0]["id"] if activityTypeLink is not None else None
 
             routeLink = act["_links"].get("route")
             routeID = routeLink[0]["id"] if routeLink is not None else None
 
-            privacyLink = act["_links"]["privacy"]
+            privacyLink = act["_links"].get("privacy")
             privacyID = privacyLink[0]["id"] if privacyLink is not None else None
             activity.Private = privacyID == "1"
 
@@ -170,19 +170,22 @@ class MapMyFitnessService(ServiceBase):
                 "privacyID": privacyID,
                 "routeID": routeID
                 }
-            activity.UploadedTo = [{"Connection": serviceRecord, "ActivityID": activityID}]
             activity.CalculateUID()
             activities.append(activity)
         return activities, exclusions
 
     def DownloadActivity(self, serviceRecord, activity):
-        # TODO get rid of UploadedTo and do the same as runkeeper
         # I shouldn't need to get the workout at all - I think I just need the route here - if activity.ServiceData.routeID is not None
         logger.debug("DownloadActivity")
-        activityID = [x["ActivityID"] for x in activity.UploadedTo if x["Connection"] == serviceRecord][0]
-        response = requests.get("https://api.mapmyfitness.com/v7.1/workout/" + activityID, headers=self._apiHeaders(serviceRecord))
+        activityID = activity.ServiceData["ActivityID"]
 
-        # TODO get waypoints and other data
+        lap = Lap(stats=activity.Stats, startTime=activity.StartTime, endTime=activity.EndTime)
+        activity.Laps = [lap]
+        lap.Waypoints = []
+
+        if serviceRecord.routeID is not None:
+            response = requests.get("https://api.mapmyfitness.com/v7.1/route/" + activityID, headers=self._apiHeaders(serviceRecord))
+            # TODO add waypoints to laps
 
         return activity
 
