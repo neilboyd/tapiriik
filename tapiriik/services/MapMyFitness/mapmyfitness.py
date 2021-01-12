@@ -117,7 +117,6 @@ class MapMyFitnessService(ServiceBase):
         if parentLink is not None:
             parentId = parentLink[0]["id"]
             return self._resolveActivityType(parentId, headers)
-            return self._resolveActivityType(parent, headers)
         return ActivityType.Other
 
     def DownloadActivityList(self, serviceRecord, exhaustive=False):
@@ -141,31 +140,49 @@ class MapMyFitnessService(ServiceBase):
         activities = []
         exclusions = []
         for act in allItems:
-            # TODO catch exception add add to exclusions
+            # TODO catch exception and add to exclusions
             activity = UploadedActivity()
+            activityID = act["_links"]["self"][0]["id"]
             activity.StartTime = datetime.strptime(act["start_datetime"], "%Y-%m-%dT%H:%M:%S%z")
+            activity.Notes = act["notes"] if "notes" in act else None
+
+            # aggregate
             aggregates = act["aggregates"]
             activity.EndTime = activity.StartTime + timedelta(0, round(float(aggregates["elapsed_time_total"])))
             activity.Distance = aggregates["distance_total"]
-            activityTypeId = act["_links"]["activity_type"][0]["id"]
-            activity.Type = self._resolveActivityType(activityTypeId, headers)
-            activityID = act["_links"]["self"]["id"]
-            activity.ServiceData = {"ActivityID": activityID, "reference_key": act["reference_key"], "activity_type": activityTypeId}
-            activity.UploadedTo = [{"Connection": serviceRecord, "ActivityID": activityID, "reference_key": act["reference_key"], "activity_type": activityTypeId}]
+            # TODO get more properties - see endomondo and strava
+
+            activityTypeLink = act["_links"]["activity_type"]
+            activityTypeID = activityTypeLink[0]["id"] if activityTypeLink is not None else None
+
+            routeLink = act["_links"].get("route")
+            routeID = routeLink[0]["id"] if routeLink is not None else None
+
+            privacyLink = act["_links"]["privacy"]
+            privacyID = privacyLink[0]["id"] if privacyLink is not None else None
+            activity.Private = privacyID == "1"
+
+            activity.Type = self._resolveActivityType(activityTypeID, headers)
+
+            activity.ServiceData = {
+                "ActivityID": activityID,
+                "activityTypeID": activityTypeID,
+                "privacyID": privacyID,
+                "routeID": routeID
+                }
+            activity.UploadedTo = [{"Connection": serviceRecord, "ActivityID": activityID}]
             activity.CalculateUID()
             activities.append(activity)
         return activities, exclusions
 
     def DownloadActivity(self, serviceRecord, activity):
         # TODO get rid of UploadedTo and do the same as runkeeper
+        # I shouldn't need to get the workout at all - I think I just need the route here - if activity.ServiceData.routeID is not None
         logger.debug("DownloadActivity")
         activityID = [x["ActivityID"] for x in activity.UploadedTo if x["Connection"] == serviceRecord][0]
         response = requests.get("https://api.mapmyfitness.com/v7.1/workout/" + activityID, headers=self._apiHeaders(serviceRecord))
 
-        activity.Notes = response["notes"] if "notes" in response else None
-        activity.Private = response["_links"]["privacy"]["id"] == "1"
-
-        # TODO do something
+        # TODO get waypoints and other data
 
         return activity
 
