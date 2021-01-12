@@ -155,20 +155,16 @@ class MapMyFitnessService(ServiceBase):
             activityTypeLink = act["_links"].get("activity_type")
             activityTypeID = activityTypeLink[0]["id"] if activityTypeLink is not None else None
 
-            routeLink = act["_links"].get("route")
-            routeID = routeLink[0]["id"] if routeLink is not None else None
-
             privacyLink = act["_links"].get("privacy")
             privacyID = privacyLink[0]["id"] if privacyLink is not None else None
-            activity.Private = privacyID == "1"
+            activity.Private = privacyID == "0"
 
             activity.Type = self._resolveActivityType(activityTypeID, headers)
 
             activity.ServiceData = {
                 "ActivityID": activityID,
                 "activityTypeID": activityTypeID,
-                "privacyID": privacyID,
-                "routeID": routeID
+                "privacyID": privacyID
                 }
             activity.CalculateUID()
             activities.append(activity)
@@ -183,9 +179,26 @@ class MapMyFitnessService(ServiceBase):
         activity.Laps = [lap]
         lap.Waypoints = []
 
-        if serviceRecord.routeID is not None:
-            response = requests.get("https://api.mapmyfitness.com/v7.1/route/" + activityID + "/?field_set=detailed", headers=self._apiHeaders(serviceRecord))
-            # TODO add waypoints to laps
+        response = requests.get("https://api.mapmyfitness.com/v7.1/workout/" + activityID + "/?field_set=time_series", headers=self._apiHeaders(serviceRecord))
+        data = response.json()
+
+        # add waypoints to laps
+        if "time_series" in data:
+            for pt in data["time_series"]["position"]:
+                timestamp = pt[0]
+                wp = Waypoint(activity.StartTime + timedelta(seconds=timestamp))
+
+                pos = pt[1]
+                if ("lat" in pos and "lng" in pos) or "elevation" in pos:
+                    wp.Location = Location()
+                    if "lat" in pos and "lng" in pos:
+                        wp.Location.Latitude = pos["lat"]
+                        wp.Location.Longitude = pos["lng"]
+                        activity.GPS = True
+                    if "elevation" in pos:
+                        wp.Location.Altitude = pos["elevation"]
+
+                lap.Waypoints.append(wp)
 
         return activity
 
