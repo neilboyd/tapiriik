@@ -250,7 +250,7 @@ DISABLED_SERVICES = []
 
 # Services no longer available - will be removed across the site + excluded from sync.
 # This can also be used for future services that are in development and therefore in the database.
-WITHDRAWN_SERVICES = ["mapmyfitness"]
+WITHDRAWN_SERVICES = []
 
 # Where to put per-user sync logs
 USER_SYNC_LOGS = "./"
@@ -259,7 +259,7 @@ USER_SYNC_LOGS = "./"
 SITE_VER = "unknown"
 
 # Cache lots of stuff to make local debugging faster
-AGGRESSIVE_CACHE = True
+AGGRESSIVE_CACHE = False
 
 # Diagnostics auth, None = no auth
 DIAG_AUTH_TOTP_SECRET = DIAG_AUTH_PASSWORD = None
