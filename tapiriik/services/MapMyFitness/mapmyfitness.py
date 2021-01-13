@@ -185,7 +185,7 @@ class MapMyFitnessService(ServiceBase):
         if "time_series" in data and "position" in data["time_series"]:
             for pt in data["time_series"]["position"]:
                 timestamp = pt[0]
-                wp = Waypoint(activity.StartTime + timedelta(seconds=timestamp))
+                wp = Waypoint(activity.StartTime + timedelta(seconds=round(timestamp)))
 
                 pos = pt[1]
                 if ("lat" in pos and "lng" in pos) or "elevation" in pos:
