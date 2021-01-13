@@ -1,5 +1,6 @@
 from django import template
 from tapiriik.services import Service, ServiceRecord
+from tapiriik.settings import WITHDRAWN_SERVICES
 from tapiriik.database import db
 register = template.Library()
 
@@ -18,4 +19,4 @@ def exceptSvc(value):
 
 @register.filter(name="svc_populate_conns")
 def fullRecords(conns):
-    return [ServiceRecord(x) for x in db.connections.find({"_id": {"$in": [x["ID"] for x in conns]}})]
+    return [ServiceRecord(x) for x in db.connections.find({"_id": {"$in": [x["ID"] for x in conns]}}) if x["Service"] not in WITHDRAWN_SERVICES]
