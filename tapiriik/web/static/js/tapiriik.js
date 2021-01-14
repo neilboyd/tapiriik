@@ -877,7 +877,7 @@ tapiriik.RefreshSyncCountdown = function(){
 			sync_button_active = false;
 			if (!tapiriik.Synchronizing){
 				var waitTimeMessage = "";
-				if (tapiriik.SynchronizationWaitTime > 10) { // Otherwise you'd expect a countdown, which this is generally not.
+				if (tapiriik.SynchronizationWaitTime > 60) { // Otherwise you'd expect a countdown, which this is generally not.
 					waitTimeMessage = " (approx. " + tapiriik.FormatTimespan(tapiriik.SynchronizationWaitTime * 1000) + ")";
 				}
 				sync_state_text = "Queuing" + waitTimeMessage;

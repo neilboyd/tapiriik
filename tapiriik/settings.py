@@ -259,7 +259,7 @@ USER_SYNC_LOGS = "./"
 SITE_VER = "unknown"
 
 # Cache lots of stuff to make local debugging faster
-AGGRESSIVE_CACHE = False
+AGGRESSIVE_CACHE = True
 
 # Diagnostics auth, None = no auth
 DIAG_AUTH_TOTP_SECRET = DIAG_AUTH_PASSWORD = None
