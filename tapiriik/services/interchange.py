@@ -245,7 +245,7 @@ class Activity:
             raise ValueError("Activity EndTime TZ mismatch - %s master vs %s instance" % (self.TZ, self.EndTime.tzinfo))
 
         for lap in self.Laps:
-            if str(ap.StartTime.tzinfo) != str(self.TZ):
+            if str(lap.StartTime.tzinfo) != str(self.TZ):
                 raise ValueError("Lap StartTime TZ mismatch - %s master vs %s instance" % (self.TZ, lap.StartTime.tzinfo))
             if str(lap.EndTime.tzinfo) != str(self.TZ):
                 raise ValueError("Lap EndTime TZ mismatch - %s master vs %s instance" % (self.TZ, lap.EndTime.tzinfo))
