@@ -204,7 +204,7 @@ class MapMyFitnessService(ServiceBase):
 
     def UploadActivity(self, serviceRecord, activity):
         # TODO
-        pass
+        raise Exception("Not implemented upload to MMR")
 
     def DeleteCachedData(self, serviceRecord):
         pass
