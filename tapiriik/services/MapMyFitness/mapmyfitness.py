@@ -182,8 +182,12 @@ class MapMyFitnessService(ServiceBase):
         response = requests.get("https://api.mapmyfitness.com/v7.1/workout/" + activityID + "/?field_set=time_series", headers=self._apiHeaders(serviceRecord))
         data = response.json()
 
+        activity.GPS = False
+        activity.Stationary = True
+
         # add waypoints to laps
         if "time_series" in data and "position" in data["time_series"]:
+            activity.Stationary = False
             for pt in data["time_series"]["position"]:
                 timestamp = pt[0]
                 wp = Waypoint(activity.StartTime + timedelta(seconds=round(timestamp)))
