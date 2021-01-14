@@ -12,7 +12,7 @@ def settings(request):
             {"Title": "Sync private activities",
             "Description": "By default, all activities will be synced. Unsetting this will prevent private activities being taken from this service.",
             "Field": "checkbox",
-            "Available": ["strava", "runkeeper"]
+            "Available": ["strava", "runkeeper", "mapmyfitness"]
             }
     }
     conns = User.GetConnectionRecordsByUser(request.user)
