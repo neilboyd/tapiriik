@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 class MapMyFitnessService(ServiceBase):
     ID = "mapmyfitness"
     DisplayName = "MapMyFitness"
+    DisplayAbbreviation = "MMR"
     AuthenticationType = ServiceAuthenticationType.OAuth
     UserAuthorizationURL = None
     AuthenticationNoFrame = True
