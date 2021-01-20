@@ -6,6 +6,9 @@ from tapiriik.settings import WEB_ROOT, MAPMYFITNESS_CLIENT_KEY, MAPMYFITNESS_CL
 
 from datetime import datetime, timedelta
 from urllib.parse import parse_qs, urlencode
+import json
+import os
+import pytz
 import requests
 from django.core.urlresolvers import reverse
 from requests_oauthlib import OAuth1
@@ -120,6 +123,9 @@ class MapMyFitnessService(ServiceBase):
             return self._resolveActivityType(parentId, headers)
         return ActivityType.Other
 
+    def _formatDate(self, date):
+        return datetime.strftime(date.astimezone(pytz.utc), "%Y-%m-%d %H:%M:%S UTC")
+
     def DownloadActivityList(self, serviceRecord, exhaustive=False):
         logger.debug("DownloadActivityList")
         allItems = []
@@ -207,8 +213,26 @@ class MapMyFitnessService(ServiceBase):
         return activity
 
     def UploadActivity(self, serviceRecord, activity):
-        # TODO
-        raise Exception("Not implemented upload to MMR")
+
+        activity_id = "tap-" + activity.UID + "-" + str(os.getpid())
+
+        upload_data = {
+            # "device_id": device_id,
+            # "sport": sport,
+            "start_time": self._formatDate(activity.StartTime),
+            "end_time": self._formatDate(activity.EndTime),
+            "points": []
+        }
+
+        upload_resp = requests.post(
+            "https://api.mapmyfitness.com/v7.1/workout/" + activity_id,
+             headers=self._apiHeaders(serviceRecord),
+             data=json.dumps(upload_data))
+        if upload_resp.status_code != 200:
+            self._rateLimitBailout(upload_resp)
+            raise APIException("Could not upload activity %s %s" % (upload_resp.status_code, upload_resp.text))
+
+        return upload_resp.json()["id"]
 
     def DeleteCachedData(self, serviceRecord):
         pass

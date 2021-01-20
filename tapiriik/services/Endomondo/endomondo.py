@@ -348,7 +348,7 @@ class EndomondoService(ServiceBase):
             serviceRecord.SetConfiguration({"DeviceRegistered": True})
 
         activity_id = "tap-" + activity.UID + "-" + str(os.getpid())
-        
+
         sport = self._getSport(activity)
 
         upload_data = {
