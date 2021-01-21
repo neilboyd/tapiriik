@@ -214,22 +214,50 @@ class MapMyFitnessService(ServiceBase):
 
     def UploadActivity(self, serviceRecord, activity):
 
+        links = {}
+
         activity_id = "tap-" + activity.UID + "-" + str(os.getpid())
 
-        upload_data = {
-            # "device_id": device_id,
-            # "sport": sport,
-            "start_time": self._formatDate(activity.StartTime),
-            "end_time": self._formatDate(activity.EndTime),
-            "points": []
+        privacy_option_id = "1" # TODO privacy
+        links["privacy"] = [{
+            "href": "/v7.1/privacy_option/%s/" % privacy_option_id,
+            "id": privacy_option_id
+            }]
+
+        activity_type_id = [k for k,v in self._activityMappings.items() if v == activity.Type][0]
+        if not activity_type_id:
+            activity_type_id = "1"
+        links["activity_type"] = [{
+            "href": "/v7.1/activity_type/%s/" % activity_type_id,
+            "id": activity_type_id
+            }]
+
+        # TODO agregates
+        aggregates = {
+
         }
 
-        upload_resp = requests.post(
+
+
+        upload_data = {
+            "start_time": self._formatDate(activity.StartTime),
+            "end_time": self._formatDate(activity.EndTime),
+            "points": [],
+            "aggregates": aggregates,
+            "_links": links
+        }
+
+        if activity.Name:
+            upload_data["title"] = activity.Name
+
+        if activity.Notes:
+            upload_data["notes"] = activity.Notes
+
+        upload_resp = requests.put(
             "https://api.mapmyfitness.com/v7.1/workout/" + activity_id,
              headers=self._apiHeaders(serviceRecord),
              data=json.dumps(upload_data))
         if upload_resp.status_code != 200:
-            self._rateLimitBailout(upload_resp)
             raise APIException("Could not upload activity %s %s" % (upload_resp.status_code, upload_resp.text))
 
         return upload_resp.json()["id"]
