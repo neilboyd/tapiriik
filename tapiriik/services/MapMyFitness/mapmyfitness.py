@@ -7,7 +7,6 @@ from tapiriik.settings import WEB_ROOT, MAPMYFITNESS_CLIENT_KEY, MAPMYFITNESS_CL
 from datetime import datetime, timedelta
 from urllib.parse import parse_qs, urlencode
 import json
-import os
 import pytz
 import requests
 from django.core.urlresolvers import reverse
@@ -152,7 +151,8 @@ class MapMyFitnessService(ServiceBase):
 
             # aggregate
             aggregates = act["aggregates"]
-            activity.EndTime = activity.StartTime + timedelta(0, round(float(aggregates["elapsed_time_total"])))
+            elapsed_time_total = aggregates["elapsed_time_total"] if "elapsed_time_total" in aggregates else "0"
+            activity.EndTime = activity.StartTime + timedelta(0, round(float(elapsed_time_total)))
             activity.Distance = aggregates["distance_total"]
             # TODO get more properties - see endomondo and strava
 
@@ -211,26 +211,25 @@ class MapMyFitnessService(ServiceBase):
 
     def UploadActivity(self, serviceRecord, activity):
 
-        activity_id = "tap-" + activity.UID + "-" + str(os.getpid())
-
         privacy_option_id = "1" # TODO privacy
 
         activity_type_id = [k for k,v in self._activityMappings.items() if v == activity.Type][0]
         if not activity_type_id:
             activity_type_id = "1"
 
-        # TODO agregates
-        aggregates = {
+        elapsed_time_total = activity.EndTime - activity.StartTime
 
+        # TODO aggregates
+        aggregates = {
+            "elapsed_time_total": elapsed_time_total.seconds
         }
 
         upload_data = {
             "start_datetime": activity.StartTime.isoformat(),
-            # TODO timezone
+            "start_locale_timezone": activity.TZ.zone,
             "name": activity.Name,
             "privacy": "/v7.1/privacy_option/%s/" % privacy_option_id,
             "activity_type": "/v7.1/activity_type/%s/" % activity_type_id,
-            "points": [],
             "aggregates": aggregates
             # TODO time series
         }
@@ -238,14 +237,14 @@ class MapMyFitnessService(ServiceBase):
         if activity.Notes:
             upload_data["notes"] = activity.Notes
 
-        upload_resp = requests.put(
-            "https://api.mapmyfitness.com/v7.1/workout/" + activity_id,
+        upload_resp = requests.post(
+            "https://api.mapmyfitness.com/v7.1/workout/",
              headers=self._apiHeaders(serviceRecord),
              data=json.dumps(upload_data))
-        if upload_resp.status_code != 200:
+        if upload_resp.status_code != 201:
             raise APIException("Could not upload activity %s %s" % (upload_resp.status_code, upload_resp.text))
 
-        return upload_resp.json()["id"]
+        return upload_resp.json()["_links"]["self"][0]["id"]
 
     def DeleteCachedData(self, serviceRecord):
         pass
