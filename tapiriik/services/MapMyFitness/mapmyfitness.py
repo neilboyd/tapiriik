@@ -123,9 +123,6 @@ class MapMyFitnessService(ServiceBase):
             return self._resolveActivityType(parentId, headers)
         return ActivityType.Other
 
-    def _formatDate(self, date):
-        return datetime.strftime(date.astimezone(pytz.utc), "%Y-%m-%d %H:%M:%S UTC")
-
     def DownloadActivityList(self, serviceRecord, exhaustive=False):
         logger.debug("DownloadActivityList")
         allItems = []
@@ -214,41 +211,29 @@ class MapMyFitnessService(ServiceBase):
 
     def UploadActivity(self, serviceRecord, activity):
 
-        links = {}
-
         activity_id = "tap-" + activity.UID + "-" + str(os.getpid())
 
         privacy_option_id = "1" # TODO privacy
-        links["privacy"] = [{
-            "href": "/v7.1/privacy_option/%s/" % privacy_option_id,
-            "id": privacy_option_id
-            }]
 
         activity_type_id = [k for k,v in self._activityMappings.items() if v == activity.Type][0]
         if not activity_type_id:
             activity_type_id = "1"
-        links["activity_type"] = [{
-            "href": "/v7.1/activity_type/%s/" % activity_type_id,
-            "id": activity_type_id
-            }]
 
         # TODO agregates
         aggregates = {
 
         }
 
-
-
         upload_data = {
-            "start_time": self._formatDate(activity.StartTime),
-            "end_time": self._formatDate(activity.EndTime),
+            "start_datetime": activity.StartTime.isoformat(),
+            # TODO timezone
+            "name": activity.Name,
+            "privacy": "/v7.1/privacy_option/%s/" % privacy_option_id,
+            "activity_type": "/v7.1/activity_type/%s/" % activity_type_id,
             "points": [],
-            "aggregates": aggregates,
-            "_links": links
+            "aggregates": aggregates
+            # TODO time series
         }
-
-        if activity.Name:
-            upload_data["title"] = activity.Name
 
         if activity.Notes:
             upload_data["notes"] = activity.Notes
