@@ -227,6 +227,9 @@ class MapMyFitnessService(ServiceBase):
         position = []
         heartrate = []
         power = []
+        distance = []
+        speed = []
+        cadence = []
         for wp in activity.GetFlatWaypoints():
             time = wp.Timestamp - activity.StartTime
             time = time.seconds
@@ -246,13 +249,27 @@ class MapMyFitnessService(ServiceBase):
             if wp.Power is not None:
                 pt = [time, round(wp.Power)]
                 power += pt
+            if wp.Distance is not None:
+                pt = [time, round(wp.Distance)]
+                distance += pt
+            if wp.Speed is not None:
+                pt = [time, round(wp.Speed)]
+                speed += pt
+            if wp.Cadence is not None:
+                pt = [time, round(wp.Cadence)]
+                cadence += pt
+            elif wp.RunCadence is not None:
+                pt = [time, round(wp.RunCadence)]
+                cadence += pt
 
         time_series = {
             "position": position,
             "heartrate": heartrate,
-            "power": power
+            "power": power,
+            "distance": distance,
+            "speed": speed,
+            "cadence": cadence
         }
-        # TODO add more data into time series
 
         upload_data = {
             "start_datetime": activity.StartTime.isoformat(),
