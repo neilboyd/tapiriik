@@ -219,10 +219,40 @@ class MapMyFitnessService(ServiceBase):
 
         elapsed_time_total = activity.EndTime - activity.StartTime
 
-        # TODO aggregates
         aggregates = {
             "elapsed_time_total": elapsed_time_total.seconds
         }
+        # TODO add more data into aggregates
+
+        position = []
+        heartrate = []
+        power = []
+        for wp in activity.GetFlatWaypoints():
+            time = wp.Timestamp - activity.StartTime
+            time = time.seconds
+            if wp.Location:
+                pt = [time]
+                pos = {}
+                if wp.Location.Latitude is not None and wp.Location.Longitude is not None:
+                    pos["lat"] = wp.Location.Latitude
+                    pos["lng"] = wp.Location.Longitude
+                if wp.Location.Altitude is not None:
+                    pos["elevation"] = wp.Location.Altitude
+                pt[1] = pos
+                position += pt
+            if wp.HR is not None:
+                pt = [time, round(wp.HR)]
+                heartrate += pt
+            if wp.Power is not None:
+                pt = [time, round(wp.Power)]
+                power += pt
+
+        time_series = {
+            "position": position,
+            "heartrate": heartrate,
+            "power": power
+        }
+        # TODO add more data into time series
 
         upload_data = {
             "start_datetime": activity.StartTime.isoformat(),
@@ -230,8 +260,8 @@ class MapMyFitnessService(ServiceBase):
             "name": activity.Name,
             "privacy": "/v7.1/privacy_option/%s/" % privacy_option_id,
             "activity_type": "/v7.1/activity_type/%s/" % activity_type_id,
-            "aggregates": aggregates
-            # TODO time series
+            "aggregates": aggregates,
+            "time_series": time_series
         }
 
         if activity.Notes:
