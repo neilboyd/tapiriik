@@ -1,7 +1,7 @@
 from tapiriik.services.service_base import ServiceAuthenticationType, ServiceBase
 from tapiriik.services.service_record import ServiceRecord
 from tapiriik.services.api import APIException, UserException, UserExceptionType
-from tapiriik.services.interchange import UploadedActivity, ActivityType, WaypointType, Waypoint, Location, Lap
+from tapiriik.services.interchange import UploadedActivity, ActivityType, ActivityStatisticUnit, WaypointType, Waypoint, Location, Lap
 from tapiriik.settings import WEB_ROOT, MAPMYFITNESS_CLIENT_KEY, MAPMYFITNESS_CLIENT_SECRET
 
 from datetime import datetime, timedelta
@@ -211,7 +211,10 @@ class MapMyFitnessService(ServiceBase):
 
     def UploadActivity(self, serviceRecord, activity):
 
-        privacy_option_id = "1" # TODO privacy
+        if activity.Private:
+            privacy_option_id = "0"
+        else:
+            privacy_option_id = "3"
 
         activity_type_id = [k for k,v in self._activityMappings.items() if v == activity.Type][0]
         if not activity_type_id:
@@ -222,8 +225,56 @@ class MapMyFitnessService(ServiceBase):
         aggregates = {
             "elapsed_time_total": elapsed_time_total.seconds
         }
-        # TODO add more data into aggregates
 
+        if activity.Stats.Distance.Value is not None:
+            aggregates["distance_total"] = activity.Stats.Distance.asUnits(ActivityStatisticUnit.Kilometers).Value
+
+        if activity.Stats.TimerTime.Value is not None:
+            aggregates["active_time_total"] = activity.Stats.TimerTime.asUnits(ActivityStatisticUnit.Seconds).Value
+        elif activity.Stats.MovingTime.Value is not None:
+            aggregates["active_time_total"] = activity.Stats.MovingTime.asUnits(ActivityStatisticUnit.Seconds).Value
+        else:
+            aggregates["active_time_total"] = (activity.EndTime - activity.StartTime).total_seconds()
+
+        speed_stats = activity.Stats.Speed.asUnits(ActivityStatisticUnit.KilometersPerHour)
+        if speed_stats.Average is not None:
+            aggregates["speed_avg"] = speed_stats.Average
+        if speed_stats.Min is not None:
+            aggregates["speed_min"] = speed_stats.Min
+        if speed_stats.Max is not None:
+            aggregates["speed_max"] = speed_stats.Max
+
+        hr_stats = activity.Stats.HR.asUnits(ActivityStatisticUnit.BeatsPerMinute)
+        if hr_stats.Average is not None:
+            aggregates["heart_rate_avg"] = hr_stats.Average
+        if hr_stats.Min is not None:
+            aggregates["heart_rate_max"] = hr_stats.Min
+        if hr_stats.Max is not None:
+            aggregates["heart_rate_max"] = hr_stats.Max
+
+        if activity.Stats.Power.Average is not None:
+            aggregates["power_avg"] = activity.Stats.Power.asUnits(ActivityStatisticUnit.Watts).Average
+        if activity.Stats.Power.Min is not None:
+            aggregates["power_min"] = activity.Stats.Power.asUnits(ActivityStatisticUnit.Watts).Min
+        if activity.Stats.Power.Max is not None:
+            aggregates["power_max"] = activity.Stats.Power.asUnits(ActivityStatisticUnit.Watts).Max
+
+        if activity.Stats.Cadence.Average is not None:
+            aggregates["cadence_avg"] = activity.Stats.Cadence.asUnits(ActivityStatisticUnit.RevolutionsPerMinute).Average
+        elif activity.Stats.RunCadence.Average is not None:
+            aggregates["cadence_avg"] = activity.Stats.RunCadence.asUnits(ActivityStatisticUnit.StepsPerMinute).Average
+
+        if activity.Stats.Cadence.Min is not None:
+            aggregates["cadence_min"] = activity.Stats.Cadence.asUnits(ActivityStatisticUnit.RevolutionsPerMinute).Min
+        elif activity.Stats.RunCadence.Min is not None:
+            aggregates["cadence_min"] = activity.Stats.RunCadence.asUnits(ActivityStatisticUnit.StepsPerMinute).Min
+
+        if activity.Stats.Cadence.Max is not None:
+            aggregates["cadence_max"] = activity.Stats.Cadence.asUnits(ActivityStatisticUnit.RevolutionsPerMinute).Max
+        elif activity.Stats.RunCadence.Max is not None:
+            aggregates["cadence_max"] = activity.Stats.RunCadence.asUnits(ActivityStatisticUnit.StepsPerMinute).Max
+
+        # time series
         position = []
         heartrate = []
         power = []
@@ -234,33 +285,32 @@ class MapMyFitnessService(ServiceBase):
             time = wp.Timestamp - activity.StartTime
             time = time.seconds
             if wp.Location:
-                pt = [time]
                 pos = {}
                 if wp.Location.Latitude is not None and wp.Location.Longitude is not None:
                     pos["lat"] = wp.Location.Latitude
                     pos["lng"] = wp.Location.Longitude
                 if wp.Location.Altitude is not None:
                     pos["elevation"] = wp.Location.Altitude
-                pt[1] = pos
-                position += pt
+                pt = [time, pos]
+                position.append(pt)
             if wp.HR is not None:
                 pt = [time, round(wp.HR)]
-                heartrate += pt
+                heartrate.append(pt)
             if wp.Power is not None:
                 pt = [time, round(wp.Power)]
-                power += pt
+                power.append(pt)
             if wp.Distance is not None:
                 pt = [time, round(wp.Distance)]
-                distance += pt
+                distance.append(pt)
             if wp.Speed is not None:
                 pt = [time, round(wp.Speed)]
-                speed += pt
+                speed.append(pt)
             if wp.Cadence is not None:
                 pt = [time, round(wp.Cadence)]
-                cadence += pt
+                cadence.append(pt)
             elif wp.RunCadence is not None:
                 pt = [time, round(wp.RunCadence)]
-                cadence += pt
+                cadence.append(pt)
 
         time_series = {
             "position": position,
