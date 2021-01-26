@@ -1,7 +1,7 @@
 from tapiriik.services.service_base import ServiceAuthenticationType, ServiceBase
 from tapiriik.services.service_record import ServiceRecord
 from tapiriik.services.api import APIException, UserException, UserExceptionType
-from tapiriik.services.interchange import UploadedActivity, ActivityType, ActivityStatisticUnit, WaypointType, Waypoint, Location, Lap
+from tapiriik.services.interchange import UploadedActivity, ActivityType, ActivityStatistic, ActivityStatisticUnit, WaypointType, Waypoint, Location, Lap
 from tapiriik.settings import WEB_ROOT, MAPMYFITNESS_CLIENT_KEY, MAPMYFITNESS_CLIENT_SECRET
 
 from datetime import datetime, timedelta
@@ -153,8 +153,44 @@ class MapMyFitnessService(ServiceBase):
             aggregates = act["aggregates"]
             elapsed_time_total = aggregates["elapsed_time_total"] if "elapsed_time_total" in aggregates else "0"
             activity.EndTime = activity.StartTime + timedelta(0, round(float(elapsed_time_total)))
+            activity.Stats.TimerTime = elapsed_time_total
+            activity.Stats.MovingTime = elapsed_time_total
+            if "active_time_total" in aggregates:
+                activity.Stats.MovingTime = ActivityStatistic(ActivityStatisticUnit.Seconds, value=float(aggregates["active_time_total"]))
+
             activity.Distance = aggregates["distance_total"]
-            # TODO get more properties - see endomondo and strava
+            if "distance_total" in aggregates:
+                activity.Stats.Distance = ActivityStatistic(ActivityStatisticUnit.Kilometers, value=float(aggregates["distance_total"]))
+
+            # activity.Stats.Speed = ActivityStatistic(ActivityStatisticUnit.KilometersPerHour)
+            if "speed_min" in aggregates:
+                activity.Stats.Speed.Min = float(aggregates["speed_min"])
+            if "speed_max" in aggregates:
+                activity.Stats.Speed.Max = float(aggregates["speed_max"])
+            if "speed_avg" in aggregates:
+                activity.Stats.Speed.Average = float(aggregates["speed_avg"])
+
+            if "heart_rate_min" in aggregates:
+                activity.Stats.HR.update(ActivityStatistic(ActivityStatisticUnit.BeatsPerMinute, min=float(aggregates["heart_rate_min"])))
+            if "heart_rate_max" in aggregates:
+                activity.Stats.HR.update(ActivityStatistic(ActivityStatisticUnit.BeatsPerMinute, max=float(aggregates["heart_rate_max"])))
+            if "heart_rate_avg" in aggregates:
+                activity.Stats.HR = ActivityStatistic(ActivityStatisticUnit.BeatsPerMinute, avg=float(aggregates["heart_rate_avg"]))
+
+            if "cadence_min" in aggregates:
+                activity.Stats.Cadence.update(ActivityStatistic(ActivityStatisticUnit.RevolutionsPerMinute, min=int(aggregates["cadence_min"])))
+            if "cadence_max" in aggregates:
+                activity.Stats.Cadence.update(ActivityStatistic(ActivityStatisticUnit.RevolutionsPerMinute, max=int(aggregates["cadence_max"])))
+            if "cadence_avg" in aggregates:
+                activity.Stats.Cadence = ActivityStatistic(ActivityStatisticUnit.RevolutionsPerMinute, avg=int(aggregates["cadence_avg"]))
+
+            if "power_min" in aggregates:
+                activity.Stats.Power.update(ActivityStatistic(ActivityStatisticUnit.Watts, min=int(aggregates["power_min"])))
+            if "power_max" in aggregates:
+                activity.Stats.Power.update(ActivityStatistic(ActivityStatisticUnit.Watts, max=int(aggregates["power_max"])))
+            if "power_avg" in aggregates:
+                activity.Stats.Power = ActivityStatistic(ActivityStatisticUnit.Watts, avg=int(aggregates["power_avg"]))
+
 
             activityTypeLink = act["_links"].get("activity_type")
             activityTypeID = activityTypeLink[0]["id"] if activityTypeLink is not None else None
