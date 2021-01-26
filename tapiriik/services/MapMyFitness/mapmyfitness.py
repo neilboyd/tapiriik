@@ -153,16 +153,15 @@ class MapMyFitnessService(ServiceBase):
             aggregates = act["aggregates"]
             elapsed_time_total = aggregates["elapsed_time_total"] if "elapsed_time_total" in aggregates else "0"
             activity.EndTime = activity.StartTime + timedelta(0, round(float(elapsed_time_total)))
-            activity.Stats.TimerTime = elapsed_time_total
-            activity.Stats.MovingTime = elapsed_time_total
+            activity.Stats.TimerTime  = ActivityStatistic(ActivityStatisticUnit.Seconds, value=float(elapsed_time_total))
+            activity.Stats.MovingTime = ActivityStatistic(ActivityStatisticUnit.Seconds, value=float(elapsed_time_total))
             if "active_time_total" in aggregates:
                 activity.Stats.MovingTime = ActivityStatistic(ActivityStatisticUnit.Seconds, value=float(aggregates["active_time_total"]))
 
-            activity.Distance = aggregates["distance_total"]
             if "distance_total" in aggregates:
+                activity.Distance = aggregates["distance_total"]
                 activity.Stats.Distance = ActivityStatistic(ActivityStatisticUnit.Kilometers, value=float(aggregates["distance_total"]))
 
-            # activity.Stats.Speed = ActivityStatistic(ActivityStatisticUnit.KilometersPerHour)
             if "speed_min" in aggregates:
                 activity.Stats.Speed.Min = float(aggregates["speed_min"])
             if "speed_max" in aggregates:
@@ -170,12 +169,12 @@ class MapMyFitnessService(ServiceBase):
             if "speed_avg" in aggregates:
                 activity.Stats.Speed.Average = float(aggregates["speed_avg"])
 
-            if "heart_rate_min" in aggregates:
-                activity.Stats.HR.update(ActivityStatistic(ActivityStatisticUnit.BeatsPerMinute, min=float(aggregates["heart_rate_min"])))
-            if "heart_rate_max" in aggregates:
-                activity.Stats.HR.update(ActivityStatistic(ActivityStatisticUnit.BeatsPerMinute, max=float(aggregates["heart_rate_max"])))
-            if "heart_rate_avg" in aggregates:
-                activity.Stats.HR = ActivityStatistic(ActivityStatisticUnit.BeatsPerMinute, avg=float(aggregates["heart_rate_avg"]))
+            if "heartrate_min" in aggregates:
+                activity.Stats.HR.update(ActivityStatistic(ActivityStatisticUnit.BeatsPerMinute, min=float(aggregates["heartrate_min"])))
+            if "heartrate_max" in aggregates:
+                activity.Stats.HR.update(ActivityStatistic(ActivityStatisticUnit.BeatsPerMinute, max=float(aggregates["heartrate_max"])))
+            if "heartrate_avg" in aggregates:
+                activity.Stats.HR = ActivityStatistic(ActivityStatisticUnit.BeatsPerMinute, avg=float(aggregates["heartrate_avg"]))
 
             if "cadence_min" in aggregates:
                 activity.Stats.Cadence.update(ActivityStatistic(ActivityStatisticUnit.RevolutionsPerMinute, min=int(aggregates["cadence_min"])))
@@ -263,7 +262,7 @@ class MapMyFitnessService(ServiceBase):
         }
 
         if activity.Stats.Distance.Value is not None:
-            aggregates["distance_total"] = activity.Stats.Distance.asUnits(ActivityStatisticUnit.Kilometers).Value
+            aggregates["distance_total"] = activity.Stats.Distance.asUnits(ActivityStatisticUnit.Meters).Value
 
         if activity.Stats.TimerTime.Value is not None:
             aggregates["active_time_total"] = activity.Stats.TimerTime.asUnits(ActivityStatisticUnit.Seconds).Value
@@ -272,7 +271,7 @@ class MapMyFitnessService(ServiceBase):
         else:
             aggregates["active_time_total"] = (activity.EndTime - activity.StartTime).total_seconds()
 
-        speed_stats = activity.Stats.Speed.asUnits(ActivityStatisticUnit.KilometersPerHour)
+        speed_stats = activity.Stats.Speed.asUnits(ActivityStatisticUnit.MetersPerSecond)
         if speed_stats.Average is not None:
             aggregates["speed_avg"] = speed_stats.Average
         if speed_stats.Min is not None:
