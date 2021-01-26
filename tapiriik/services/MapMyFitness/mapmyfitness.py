@@ -348,14 +348,19 @@ class MapMyFitnessService(ServiceBase):
                 pt = [time, round(wp.RunCadence)]
                 cadence.append(pt)
 
-        time_series = {
-            "position": position,
-            "heartrate": heartrate,
-            "power": power,
-            "distance": distance,
-            "speed": speed,
-            "cadence": cadence
-        }
+        time_series = {}
+        if position:
+            time_series["position"] = position
+        if heartrate:
+            time_series["heartrate"] = heartrate
+        if power:
+            time_series["power"] = power
+        if distance:
+            time_series["distance"] = distance
+        if speed:
+            time_series["speed"] = speed
+        if cadence:
+            time_series["cadence"] = cadence
 
         upload_data = {
             "start_datetime": activity.StartTime.isoformat(),
