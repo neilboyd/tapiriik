@@ -609,6 +609,14 @@ p.infotip .close:hover {
 	vertical-align: middle;
 }
 
+.service .button .newOverlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 64px;
+    height: 64px;
+}
+
 .service .status {
 	display: inline-block;
 	max-height:1em;

@@ -24,6 +24,7 @@ class MapMyFitnessService(ServiceBase):
     UserAuthorizationURL = None
     AuthenticationNoFrame = True
     OutstandingOAuthRequestTokens = {}
+    IsNew = True
 
     _activityMappings = {"16": ActivityType.Running,
                          "11": ActivityType.Cycling,
