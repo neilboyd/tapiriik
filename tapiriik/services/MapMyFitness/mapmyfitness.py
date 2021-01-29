@@ -42,7 +42,6 @@ class MapMyFitnessService(ServiceBase):
     SupportedActivities = list(_activityMappings.values())
 
     def WebInit(self):
-        logger.debug("WebInit")
         redirect_uri = WEB_ROOT + reverse("oauth_return", kwargs={"service": "mapmyfitness"})
         params = {'client_id': MAPMYFITNESS_CLIENT_KEY,
                   'response_type': 'code',
@@ -51,7 +50,6 @@ class MapMyFitnessService(ServiceBase):
             "https://api.mapmyfitness.com/v7.1/oauth2/authorize/?" + urlencode(params)
 
     def GenerateUserAuthorizationURL(self, session, level=None):
-        logger.debug("GenerateUserAuthorizationURL")
         oauth = OAuth1(MAPMYFITNESS_CLIENT_KEY, client_secret=MAPMYFITNESS_CLIENT_SECRET)
         response = requests.post("https://api.mapmyfitness.com/v7.1/oauth2/request_token", auth=oauth)
         credentials = parse_qs(response.text)
@@ -61,19 +59,15 @@ class MapMyFitnessService(ServiceBase):
         return "https://api.mapmyfitness.com/v7.1/oauth2/authorize?" + urlencode(reqObj)
 
     def _apiHeaders(self, serviceRecord):
-        logger.debug("_apiHeaders")
         return {"Authorization": "Bearer " + serviceRecord.Authorization["Token"],
                 "Accept-Charset": "UTF-8"}
 
     def _getUserId(self, serviceRecord):
-        logger.debug("_getUserId")
         response = requests.get("https://api.mapmyfitness.com/v7.1/user/self", headers=self._apiHeaders(serviceRecord))
-        logger.debug("_getUserId response=%s" % response)
         responseData = response.json()
         return responseData["id"]
 
     def RetrieveAuthorizationToken(self, req, level):
-        logger.debug("RetrieveAuthorizationToken")
         from tapiriik.services import Service
 
         code = req.GET.get("code")
@@ -101,7 +95,6 @@ class MapMyFitnessService(ServiceBase):
         pass
 
     def _getActivityTypeHierarchy(self, headers):
-        logger.debug("_getActivityTypeHierarchy")
         if hasattr(self, "_activityTypes"):
             return self._activityTypes
         response = requests.get("https://api.mapmyfitness.com/v7.1/activity_type", headers=headers)
@@ -112,7 +105,6 @@ class MapMyFitnessService(ServiceBase):
         return self._activityTypes
 
     def _resolveActivityType(self, actType, headers):
-        logger.debug("_resolveActivityType")
         self._getActivityTypeHierarchy(headers)
         if actType in self._activityMappings:
             return self._activityMappings[actType]
@@ -211,8 +203,8 @@ class MapMyFitnessService(ServiceBase):
         return activities, exclusions
 
     def DownloadActivity(self, serviceRecord, activity):
-        logger.debug("DownloadActivity")
         activityID = activity.ServiceData["ActivityID"]
+        logger.debug("DownloadActivity %s" % activityID)
 
         lap = Lap(stats=activity.Stats, startTime=activity.StartTime, endTime=activity.EndTime)
         activity.Laps = [lap]
