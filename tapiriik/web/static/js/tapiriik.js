@@ -884,9 +884,13 @@ tapiriik.RefreshSyncCountdown = function(){
 				sync_button_queuing = true;
 			} else {
 				sync_button_engaged = true;
-				var progress = "";
 				if (tapiriik.SynchronizationStep == "list") {
-					sync_state_text = "Checking " + tapiriik.ServiceInfo[tapiriik.SynchronizationProgress].DisplayName;
+					var progress = tapiriik.ServiceInfo[tapiriik.SynchronizationProgress];
+					if(progress) {
+						sync_state_text = "Checking " + progress.DisplayName;
+					} else {
+						sync_state_text = "Checking";
+					}
 				} else {
 					sync_state_text = Math.round(tapiriik.SynchronizationProgress*100) + "% complete";
 				}
