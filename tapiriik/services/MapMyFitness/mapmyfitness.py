@@ -152,8 +152,7 @@ class MapMyFitnessService(ServiceBase):
                 activity.Stats.MovingTime = ActivityStatistic(ActivityStatisticUnit.Seconds, value=float(aggregates["active_time_total"]))
 
             if "distance_total" in aggregates:
-                activity.Distance = aggregates["distance_total"]
-                activity.Stats.Distance = ActivityStatistic(ActivityStatisticUnit.Kilometers, value=float(aggregates["distance_total"]))
+                activity.Stats.Distance = ActivityStatistic(ActivityStatisticUnit.Meters, value=float(aggregates["distance_total"]))
 
             if "speed_min" in aggregates:
                 activity.Stats.Speed.Min = float(aggregates["speed_min"])
