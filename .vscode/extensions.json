@@ -1,7 +1,6 @@
 {
     "recommendations": [
         "ms-python.python",
-        "tht13.python",
         "visualstudioexptteam.vscodeintellicode"
     ]
 }
