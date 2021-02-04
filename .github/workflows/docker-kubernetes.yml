@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - run
+      - deploy-master
 
 jobs:
   build:
@@ -12,6 +12,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: set branch name
+        run: echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
       - name: Docker Login
         uses: docker/login-action@v1.6.0
@@ -29,11 +32,13 @@ jobs:
         run: |
           docker build . \
             --tag ${{ secrets.DOCKER_USERNAME }}/tapiriik:${{ github.sha }} \
+            --tag ${{ secrets.DOCKER_USERNAME }}/tapiriik:${{ env.BRANCH_NAME }} \
             --tag ${{ secrets.DOCKER_USERNAME }}/tapiriik:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/tapiriik
 
       - name: kubectl apply
         # NB: the secrets need to be friendly to sed, eg & should be escaped as \&
+        #     and use # as separator below for secrets that contain /, eg URLs
         run: |
           sed -i'' \
             -e 's#WEB_ROOT#${{ secrets.WEB_ROOT }}#g' \

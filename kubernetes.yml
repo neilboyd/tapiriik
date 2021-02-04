@@ -59,7 +59,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: tapiriik-scheduler
-        image: neilb27/tapiriik:latest
+        image: neilb27/tapiriik:master
         command: ["python3"]
         args: ["sync_scheduler.py"]
         resources:
@@ -106,7 +106,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: tapiriik-worker
-        image: neilb27/tapiriik:latest
+        image: neilb27/tapiriik:master
         command: ["python3"]
         args: ["sync_worker.py"]
         resources:
@@ -220,7 +220,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: tapiriik-web
-        image: neilb27/tapiriik:latest
+        image: neilb27/tapiriik:master
         command: ["python3"]
         args: ["manage.py", "runserver", "0.0.0.0:80", "--insecure"]
         resources:
