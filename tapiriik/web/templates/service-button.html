@@ -9,6 +9,9 @@
 		{% endif %}
 			<div class="button">
 				<div class="icon"><img lgsrc="{{ STATIC_URL }}img/services/{{ provider.ID }}_l.png" src="{{ STATIC_URL }}img/services/{{ provider.ID }}.png" alt="{{ provider.DisplayName }}"/>Sync with {{ provider.DisplayName }}</div>
+				{% if provider.IsNew %}
+					<img src="{{ STATIC_URL }}img/services/new.png" alt="new" class="newOverlay">
+				{% endif %}
 			</div>
 		{% if not user or provider.ID not in user.ConnectedServices|svc_ids %}
 			{% if provider.ID not in config.disabled_services %}

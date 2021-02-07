@@ -201,6 +201,16 @@ spec:
             secretKeyRef:
               name: tapiriik-secret
               key: rwgps-api-key
+        - name: MAPMYFITNESS_CLIENT_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: mapmyfitness-client-key
+        - name: MAPMYFITNESS_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: mapmyfitness-client-secret
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -357,6 +367,16 @@ spec:
             secretKeyRef:
               name: tapiriik-secret
               key: rwgps-api-key
+        - name: MAPMYFITNESS_CLIENT_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: mapmyfitness-client-key
+        - name: MAPMYFITNESS_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: tapiriik-secret
+              key: mapmyfitness-client-secret
 ---
 apiVersion: v1
 kind: Service

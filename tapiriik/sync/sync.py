@@ -1148,7 +1148,10 @@ class SynchronizationTask:
                             db.sync_stats.update({"ActivityID": activity.UID}, {"$addToSet": {"DestinationServices": destSvc.ID, "SourceServices": activitySource.ID}, "$set": {"Distance": activity.Stats.Distance.asUnits(ActivityStatisticUnit.Meters).Value, "Timestamp": datetime.utcnow()}}, upsert=True)
 
                         if len(successful_destination_service_ids):
-                            self._pushRecentSyncActivity(full_activity, successful_destination_service_ids)
+                            try:
+                                self._pushRecentSyncActivity(full_activity, successful_destination_service_ids)
+                            except Exception as e:
+                                logger.warning("\t  Exception updating recent activity cache %s - %s" % (destSvc.ID, e))
                         del full_activity
                         processedActivities += 1
                     except ActivityShouldNotSynchronizeException:

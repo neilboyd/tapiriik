@@ -7,7 +7,6 @@ import copy
 
 #### note about tapiriik and credential storage ####
 # Some services require a username and password for every action - so they need to be stored in recoverable form
-# (namely: Garmin Connect's current "API")
 # I've done my best to mitigate the risk that these credentials ever be compromised, but the risk can never be eliminated
 # If you're not comfortable with it, you can opt to not have your credentials stored, instead entering them on every sync
 

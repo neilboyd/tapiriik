@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - run
 
 jobs:
   build:
@@ -61,6 +60,8 @@ jobs:
             -e 's/SPORTTRACKS_CLIENT_ID/${{ secrets.SPORTTRACKS_CLIENT_ID }}/g' \
             -e 's/SPORTTRACKS_CLIENT_SECRET/${{ secrets.SPORTTRACKS_CLIENT_SECRET }}/g' \
             -e 's/RWGPS_APIKEY/${{ secrets.RWGPS_APIKEY }}/g' \
+            -e 's/MAPMYFITNESS_CLIENT_KEY/${{ secrets.MAPMYFITNESS_CLIENT_KEY }}/g' \
+            -e 's/MAPMYFITNESS_CLIENT_SECRET/${{ secrets.MAPMYFITNESS_CLIENT_SECRET }}/g' \
             kubernetes-secrets.yml
           sed -i'' -e 's/tapiriik:latest/tapiriik:${{ github.sha }}/g' kubernetes.yml
           kubectl apply -f kubernetes-secrets.yml --namespace tapiriik
