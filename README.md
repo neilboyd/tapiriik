@@ -1,5 +1,11 @@
 # tapiriik keeps your fitness in sync
 
+## This fork
+
+This repo is forked from https://github.com/cpfair/tapiriik.  
+It has been updated to reflect changes in the dependencies,
+and it's running on Kubernetes on [siiink.com](https://www.siiink.com).
+
 ## Looking to run tapiriik locally?
 
 Check out the [setup guide on the wiki](https://github.com/cpfair/tapiriik/wiki/Running-tapiriik-locally). It's a bit more than `pip install tapiriik`, but I'm sure you can handle it.
