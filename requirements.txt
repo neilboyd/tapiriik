@@ -5,7 +5,7 @@ pytz
 lxml
 dropbox==9.5.0
 python-dateutil
-django==1.11.29
+django==2.2.24
 pycryptodome
 celery
 django-pipeline==1.5.1
